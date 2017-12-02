@@ -1,3 +1,3 @@
 Core-War-Mobile
 
-Testing discord notifications
+Testing discord notifications, again
