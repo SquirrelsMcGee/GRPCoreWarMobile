@@ -30,4 +30,8 @@ public class Token {
 		return value;
 	}
 	
+	public String toString() {
+		return "Type: " + this.type + ", Value: " + this.value;
+	}
+	
 }
