@@ -13,23 +13,15 @@ public class Main {
 	static ArrayList<Token> output = new ArrayList<Token>();
     
     public static void main(String[] args) {
-        
-        
-        String input = "MOV    0,1\n ADD 0, 2";
-
-        
-        String lines[] = input.split("\\r?\\n");
-        for (int i = 0; i < lines.length; i++) {
-        	System.out.println(lines[i]);
-        	readLine(lines[i]);
-        }
-        
-        for (int i = 0; i < output.size(); i++) {
-        	System.out.println(output.get(i).toString());
-        }
+    	
+        Parser parser = new Parser("MOV    0,1");
+        ArrayList<Token> list = parser.getTokenArray();
+        for (int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i).toString());
+		}
         
     }
-    
+    /*
     public static void readLine(String input) {
         int j = 0, i = 0;
         for (i = 0; i < input.length(); i++) {
@@ -57,5 +49,6 @@ public class Main {
         }
         return;
     }
+    */
     
 }
