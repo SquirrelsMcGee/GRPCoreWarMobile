@@ -32,33 +32,33 @@ public class Parser {
 		char character;
 		String input = "";
 		Token token;
-		int i = 0, j = 0;
+		int i = 0, j = 0, k = 0;
 		
 		for (i = 0; i < characterArray.length; i++) {
+			System.out.println(i);
 			character = characterArray[i];
-			
-			while (skippableChar(character)) {
-				i++;
+			if (skippableChar(character)) {
+				input = "";
 				j = i;
-				character = characterArray[i];
-			}
-			
+			} else {
 			// Skipped all whitespace
-			
-			while (!skippableChar(character)) {
-				character = characterArray[i];
-				input += character;
+				k = i;
+				while (!skippableChar(character)) {
+					character = characterArray[k];
+					input += character;
+					k++;
+				}
+				token = new Token(input);
+				System.out.println(token.toString());
+				tokenArray.add(token);
 			}
-
-			token = new Token(input);
-			tokenArray.add(token);
 		}
+		
 		return;
 	}
 	
 	private Boolean skippableChar(char character) {
 		if (skippableChars.contains(character)) return true;
-		
 		return false;
 	}
 }
