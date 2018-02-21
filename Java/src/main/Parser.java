@@ -6,59 +6,47 @@ import java.util.List;
 
 public class Parser {
 	
-	private ArrayList<Token> tokenArray;
-	
-	static List<Character> skippableChars = Arrays.asList(' ', '\t', ',');
+	static List<Character> skippableChars = Arrays.asList(' ', '\t', ',', '\n');
+	static List<String> opcodes = Arrays.asList("MOV", "ADD", "JMP");
+	public ArrayList<Token> output = new ArrayList<Token>();
 	
 	public Parser(String input) {
-		createTokenArray(input);
-	}
-	
-	private void createTokenArray(String input) {
-		
-		char[] characterArray;
-		
-		characterArray = input.toCharArray();
-		
-		readLine(characterArray);
-		return;
+		String lines[] = input.split("\\r?\\n");
+        for (int i = 0; i < lines.length; i++) {
+        	System.out.println(lines[i]);
+        	readLine(lines[i]);
+        }
 	}
 	
 	public ArrayList<Token> getTokenArray() {
-		return tokenArray;
+		return output;
 	}
 	
-	private void readLine(char[] characterArray) {
-		char character;
-		String input = "";
-		Token token;
-		int i = 0, j = 0, k = 0;
-		
-		for (i = 0; i < characterArray.length; i++) {
-			System.out.println(i);
-			character = characterArray[i];
-			if (skippableChar(character)) {
-				input = "";
-				j = i;
-			} else {
-			// Skipped all whitespace
-				k = i;
-				while (!skippableChar(character)) {
-					character = characterArray[k];
-					input += character;
-					k++;
-				}
-				token = new Token(input);
-				System.out.println(token.toString());
-				tokenArray.add(token);
-			}
-		}
-		
-		return;
-	}
 	
-	private Boolean skippableChar(char character) {
-		if (skippableChars.contains(character)) return true;
-		return false;
-	}
+	public void readLine(String input) {
+        int j = 0, i = 0;
+        for (i = 0; i < input.length(); i++) {
+        	//System.out.print("(" + i+ "," +input.charAt(i) + ") ");
+        }
+        //System.out.println("");
+
+        for (i = 0; i < input.length();) {
+        	
+            while (skippableChars.contains(input.charAt(i))){            	
+        		i++;
+        		j = i;
+        		if (i >= input.length()) return;
+            }
+            
+            while (!(skippableChars.contains(input.charAt(i))) && input.charAt(i) != '\n' && i < input.length()){
+                i++;
+                if (i >= input.length()) break;
+            }
+
+            //System.out.println(i);
+            //System.out.println("Adding substring (j,i); "+ j + " " + i + " = " + input.substring(j,i));
+            output.add(new Token(input.substring(j,i)));
+        }
+        return;
+    }
 }

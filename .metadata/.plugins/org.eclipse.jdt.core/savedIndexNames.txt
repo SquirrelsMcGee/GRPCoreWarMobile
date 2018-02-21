@@ -1,0 +1,20 @@
+INDEX VERSION 1.129+C:\Users\User\Documents\GitLab\Core-War-Mobile\.metadata\.plugins\org.eclipse.jdt.core
+3100342402.index
+1742729903.index
+522126412.index
+302764880.index
+846419079.index
+1020957974.index
+1164320443.index
+190155996.index
+3567516325.index
+65696385.index
+3316952835.index
+3542295579.index
+21513793.index
+2189519397.index
+3703446477.index
+1695340134.index
+3316466471.index
+4024386802.index
+2179442848.index

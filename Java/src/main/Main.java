@@ -14,7 +14,7 @@ public class Main {
     
     public static void main(String[] args) {
     	
-        Parser parser = new Parser("MOV    0,1");
+        Parser parser = new Parser("MOV    0,1 ");
         ArrayList<Token> list = parser.getTokenArray();
         for (int i = 0; i < list.size(); i++) {
 			System.out.println(list.get(i).toString());

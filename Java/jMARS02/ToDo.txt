@@ -1,0 +1,4 @@
+get assembler that handles 94 draft+pmars extensions
+get applet code working properly
+add a way to view and modify core
+verify the correct operation of the marsVM
