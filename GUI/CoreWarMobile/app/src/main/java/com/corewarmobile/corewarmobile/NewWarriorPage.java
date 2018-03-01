@@ -21,8 +21,6 @@ public class NewWarriorPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_warrior_page);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         editText = findViewById(R.id.editText);
 
         FloatingActionButton fab = findViewById(R.id.fab);

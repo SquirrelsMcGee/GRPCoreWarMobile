@@ -25,8 +25,6 @@ public class WarriorsBarracks extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         WarriorsBarracks.context = getApplicationContext();
         setContentView(R.layout.activity_warriors_barracks);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         File root = getFilesDir();
         ListDir(root);
         //String[] fileList(context.getFilesDir());
