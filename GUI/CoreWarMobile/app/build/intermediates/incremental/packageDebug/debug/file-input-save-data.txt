@@ -1,0 +1,7 @@
+#Internal package file, do not edit.
+#Thu Mar 01 23:28:41 GMT 2018
+0.baseType=DIRECTORY
+0.base=/Users/toy/Git Tower/Core-War-Mobile/GUI/CoreWarMobile/app/build/intermediates/transforms/dexMerger/debug/0
+0.path=classes.dex
+0.set=DEX
+count=1
