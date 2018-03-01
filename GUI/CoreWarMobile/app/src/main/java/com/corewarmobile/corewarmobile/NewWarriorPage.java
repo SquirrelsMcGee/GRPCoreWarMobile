@@ -23,7 +23,7 @@ public class NewWarriorPage extends AppCompatActivity {
         setContentView(R.layout.activity_new_warrior_page);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        editText = findViewById(R.id.editText4);
+        editText = findViewById(R.id.editText);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -39,7 +39,7 @@ public class NewWarriorPage extends AppCompatActivity {
     public void clear(View v) {
         editText.setText("");
     }
-    public void saveBtn(Context context){
+    public void saveBtn(View v){
         //String filename = "myfile";
         //String fileContents = "Hello world!";
         //FileOutputStream outputStream;
@@ -47,7 +47,7 @@ public class NewWarriorPage extends AppCompatActivity {
 
         EditText warriorName = findViewById(R.id.WarriorName);
         String WarriorNameText = String.valueOf(warriorName.getText());
-        File file = new File(context.getFilesDir(), WarriorNameText);
+        File file = new File(v.getContext().getFilesDir(), WarriorNameText);
         //String[] Warrior = String.valueOf(editText.getText()).split(System.getProperty("line.separator"));
         String[] Warrior = String.valueOf(editText.getText()).split(System.getProperty("line.separator"));
         editText.setText("");
