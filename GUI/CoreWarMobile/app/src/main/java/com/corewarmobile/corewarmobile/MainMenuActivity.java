@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-public class MainMenu extends AppCompatActivity {
+public class MainMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,13 +14,11 @@ public class MainMenu extends AppCompatActivity {
 
     }
     public void PlayScreen(View view){
-        Intent PlayS = new Intent(this, MainActivity.class);
+        Intent PlayS = new Intent(this, GameActivity.class);
         startActivity(PlayS);
     }
     public void WarriorB(View view){
-        Intent Barracks = new Intent(this, WarriorsBarracks.class);
+        Intent Barracks = new Intent(this, BarrackActivity.class);
         startActivity(Barracks);
     }
-
-
 }

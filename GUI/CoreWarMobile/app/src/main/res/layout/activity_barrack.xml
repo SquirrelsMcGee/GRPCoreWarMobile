@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.corewarmobile.corewarmobile.WarriorsBarracks">
+    tools:context="com.corewarmobile.corewarmobile.BarrackActivity">
 
-    <include layout="@layout/content_warriors_barracks" />
+    <include layout="@layout/content_barrack" />
 
 </android.support.constraint.ConstraintLayout>

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,7 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WarriorsBarracks extends AppCompatActivity {
+public class BarrackActivity extends AppCompatActivity {
 
     private static Context context;
     private List<String> fileList = new ArrayList<String>();
@@ -23,8 +22,8 @@ public class WarriorsBarracks extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        WarriorsBarracks.context = getApplicationContext();
-        setContentView(R.layout.activity_warriors_barracks);
+        BarrackActivity.context = getApplicationContext();
+        setContentView(R.layout.activity_barrack);
         File root = getFilesDir();
         ListDir(root);
         //String[] fileList(context.getFilesDir());
