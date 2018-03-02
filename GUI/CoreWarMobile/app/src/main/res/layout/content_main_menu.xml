@@ -10,15 +10,17 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/corewar"
+        android:contentDescription="@string/corewar_png"
+        android:scaleType="fitXY"
         android:src="@drawable/corewar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:color/background_dark"
-        android:contentDescription="@string/corewar_png" />
+        app:srcCompat="@android:color/background_dark" />
 
     <TextView
         android:id="@+id/textView7"
