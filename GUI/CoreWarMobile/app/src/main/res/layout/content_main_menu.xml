@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_main_menu">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/bgImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/corewar"
@@ -23,7 +23,7 @@
         app:srcCompat="@android:color/background_dark" />
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/titleText"
         android:layout_width="185dp"
         android:layout_height="75dp"
         android:layout_marginEnd="32dp"
@@ -37,7 +37,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button10"
+        android:id="@+id/servButton"
         android:layout_width="157dp"
         android:layout_height="42dp"
         android:layout_marginEnd="8dp"
@@ -46,10 +46,10 @@
         android:text="@string/servers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button12" />
+        app:layout_constraintTop_toBottomOf="@+id/playButton" />
 
     <Button
-        android:id="@+id/button13"
+        android:id="@+id/lbButton"
         android:layout_width="157dp"
         android:layout_height="42dp"
         android:layout_marginEnd="8dp"
@@ -58,10 +58,10 @@
         android:text="@string/leaderboards"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button10" />
+        app:layout_constraintTop_toBottomOf="@+id/servButton" />
 
     <Button
-        android:id="@+id/button12"
+        android:id="@+id/playButton"
         android:layout_width="157dp"
         android:layout_height="42dp"
         android:layout_marginEnd="8dp"
@@ -71,10 +71,10 @@
         android:text="@string/play"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+        app:layout_constraintTop_toBottomOf="@+id/titleText" />
 
     <Button
-        android:id="@+id/button11"
+        android:id="@+id/warrButton"
         android:layout_width="157dp"
         android:layout_height="42dp"
         android:layout_marginEnd="8dp"
@@ -84,6 +84,6 @@
         android:text="@string/your_warriors"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button13" />
+        app:layout_constraintTop_toBottomOf="@+id/lbButton" />
 
 </android.support.constraint.ConstraintLayout>

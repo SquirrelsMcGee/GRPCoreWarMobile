@@ -3,7 +3,7 @@
     <string name="app_name">Core War Mobile</string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
-    <string name="title_activity_new_warrior_page">New Warrior</string>
+    <string name="title_activity_new_warrior">New Warrior</string>
     <string name="title_activity_main_menu">Main Menu</string>
     <string name="Ins_prompt">List of Instructions</string>
     <string-array name="Instructions">
@@ -41,7 +41,7 @@
         <item>start at 0</item>
         <item>ends at 800</item>
     </string-array>
-    <string name="title_activity_warriors_barracks">WarriorsBarracks</string>
+    <string name="title_activity_barrack">Warriors Barrack</string>
     <string name="new_warrior">New Warrior</string>
     <string name="run">Run</string>
     <string name="add">Add</string>
@@ -60,4 +60,5 @@
     <string name="create_your_warrior_here">Create Your Warrior Here</string>
     <string name="clear">Clear</string>
     <string name="save">Save</string>
+    <string name="title_activity_game">Core War Mobile</string>
 </resources>

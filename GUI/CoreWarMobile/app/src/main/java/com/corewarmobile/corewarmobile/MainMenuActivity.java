@@ -11,7 +11,6 @@ public class MainMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
     }
     public void PlayScreen(View view){
         Intent PlayS = new Intent(this, GameActivity.class);
