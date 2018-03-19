@@ -1,0 +1,64 @@
+<!-- Names to be necessarily changed when value is changed -->
+<resources>
+    <string name="app_name">Core War Mobile</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+    <string name="title_activity_new_warrior">New Warrior</string>
+    <string name="title_activity_main_menu">Main Menu</string>
+    <string name="Ins_prompt">List of Instructions</string>
+    <string-array name="Instructions">
+        <item>Instructions</item>
+        <item>DAT-kills the task</item>
+        <item>MOV-Moves instruction at A to B</item>
+        <item>ADD-Adds A to B</item>
+        <item>SUB-Subtracts A from B</item>
+        <item>MUL-Multiplies A and B</item>
+        <item>DIV-Divides B by A</item>
+        <item>MOD-Modulus of B in A</item>
+        <item>JMP-Jumps to A</item>
+        <item>JMZ-If *B is 0, jumps to A</item>
+        <item>JMN-If *B is not 0, jumps to A</item>
+        <item>DJN-Decreases *B</item>
+        <item>CMP-If *a == *B skips an instruction</item>
+        <item>SPL-Creates a new task</item>
+        <item>SEQ-Skips next instruction if A and B are equal</item>
+        <item>SNE-Skips next instruction if A and B are not-equal</item>
+        <item>SLT-Skips if *A less than *B</item>
+        <item>XCH-Swaps A and B</item>
+        <item>PCT-Protects operands from changing</item>
+        <item>STP-Stores A into P-Space</item>
+        <item>LDP-Retrieves data from P-Space</item>
+    </string-array>
+    <string-array name="Special">
+        <item>Special Instructions</item>
+        <item>END-Stops Compilation</item>
+        <item>ORG Identifies start location</item>
+        <item>PIN-Specifies P space identifier</item>
+        <item>EQU-Replaces all instances</item>
+    </string-array>
+    <string-array name="MemAdr">
+        <item>Memory Addresses</item>
+        <item>start at 0</item>
+        <item>ends at 800</item>
+    </string-array>
+    <string name="title_activity_barrack">Warriors Barrack</string>
+    <string name="new_warrior">New Warrior</string>
+    <string name="run">Run</string>
+    <string name="add">Add</string>
+    <string name="edit">Edit</string>
+    <string name="compile">Compile</string>
+    <string name="progress">Progress</string>
+    <string name="warrior_2">Warrior 2</string>
+    <string name="warrior_1">Warrior 1</string>
+    <string name="corewar_png">corewar.png</string>
+    <string name="core_war">CORE WAR</string>
+    <string name="servers">Servers</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="play">Play</string>
+    <string name="your_warriors">Your Warriors</string>
+    <string name="enter_warrior_name">Enter Warrior Name</string>
+    <string name="create_your_warrior_here">Create Your Warrior Here</string>
+    <string name="clear">Clear</string>
+    <string name="save">Save</string>
+    <string name="title_activity_game">Core War Mobile</string>
+</resources>
