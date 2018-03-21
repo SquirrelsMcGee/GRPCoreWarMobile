@@ -61,4 +61,6 @@
     <string name="clear">Clear</string>
     <string name="save">Save</string>
     <string name="title_activity_game">Core War Mobile</string>
+    <string name="cancel">Cancel</string>
+    <string name="select">Select</string>
 </resources>

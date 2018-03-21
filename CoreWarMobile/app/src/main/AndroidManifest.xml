@@ -25,7 +25,8 @@
         <activity
             android:name=".NewWarriorActivity"
             android:label="@string/title_activity_new_warrior" />
-        <activity android:name=".EditActivity"></activity>
+        <activity android:name=".EditActivity" />
+        <activity android:name=".AddActivity"></activity>
     </application>
 
 </manifest>
