@@ -134,6 +134,10 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    public void run(View v) {
+        // TODO run when 'RUN' is clicked
+    }
+
 
     public void NewWarrior(View view){
         Intent NewW = new Intent(this, NewWarriorActivity.class);
@@ -142,6 +146,10 @@ public class GameActivity extends AppCompatActivity {
     public void Add(View view){
         Intent Barracks = new Intent(this, BarrackActivity.class);
         startActivity(Barracks);
+    }
+    public void Edit(View view){
+        Intent i = new Intent(this, EditActivity.class);
+        startActivity(i);
     }
 
 }

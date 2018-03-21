@@ -18,16 +18,14 @@
         </activity>
         <activity
             android:name=".BarrackActivity"
-            android:label="@string/title_activity_barrack"
-            />
+            android:label="@string/title_activity_barrack" />
         <activity
             android:name=".GameActivity"
-            android:label="@string/title_activity_game"
-            />
+            android:label="@string/title_activity_game" />
         <activity
             android:name=".NewWarriorActivity"
-            android:label="@string/title_activity_new_warrior"
-            />
+            android:label="@string/title_activity_new_warrior" />
+        <activity android:name=".EditActivity"></activity>
     </application>
 
 </manifest>
