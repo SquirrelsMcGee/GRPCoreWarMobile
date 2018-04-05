@@ -34,7 +34,7 @@ package marsVM;
 
 import assembler.Assembler;
  
-import java.awt.Color;
+import android.graphics.Color;
 import java.io.Reader;
 
 public class WarriorObj
