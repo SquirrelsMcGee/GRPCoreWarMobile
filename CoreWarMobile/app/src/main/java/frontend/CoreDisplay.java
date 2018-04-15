@@ -27,7 +27,10 @@
 
 package frontend;
 
-import java.awt.*;
+import android.annotation.TargetApi;
+import android.graphics.*;
+import android.os.Build;
+import android.view.SurfaceView;
 
 /**
  * A pMARS style core display
@@ -35,7 +38,8 @@ import java.awt.*;
 public class CoreDisplay extends Canvas implements StepListener
 {
 	/* core background color */
-	protected Color background;
+	//protected Color background;
+	protected int backgroundInt;
 	
 	/* size of core */
 	protected int coreSize;
@@ -43,43 +47,66 @@ public class CoreDisplay extends Canvas implements StepListener
 	protected int width;
 	protected int height;
 	
-	protected Image offScreen;
-	protected Graphics buffer;
+	//protected Image offScreen;
+	//protected Graphics buffer;
+
+	protected Canvas buffer;
+
+
+	protected Paint paint = new Paint();
+	protected Color aliveColor;
+	protected Color deathColor;
+
+	protected int colorInt;
+	protected int dcolorInt;
 	
 	/**
 	 * Create a new core display for a specified core size and width.
 	 * @param FrontEndManager man - Object managing the front end components.
-	 * @param Container con - Display container for this component.
+	 * @param SurfaceView surface - Surface to draw on
 	 * @param int coreS - Size of core to be displayed.
 	 * @param int w - desired width of display.
 	 */
-	public CoreDisplay(FrontEndManager man, Container con, int coreS, int w)
+	public CoreDisplay(FrontEndManager man, SurfaceView surface, int coreS, int w, int h)
 	{
 		coreSize = coreS;
 		width = w;
 		height = ((coreSize / (width /3)) +1) *3;
 		
-		background = Color.black;
-		
+		backgroundInt = Color.BLACK;
+
 		man.registerStepListener(this);
-		con.add(this);
-		System.out.println("Constructor end size=" + getSize());
 	}
 	
 	/**
 	 * Update display with info from a round.
 	 * @param marsVM.StatReport report - info from round
 	 */
+	@TargetApi(Build.VERSION_CODES.O)
 	public void stepProcess(StepReport report)
 	{
 		int i;
 		int x,y;
 		int addr[];
 		
-		if (offScreen == null)
-			return;
+		//if (offScreen == null)
+		//	return;
 
-		buffer.setColor(report.warrior().getColor());
+		//Paint paint = new Paint();
+		//Color aliveColor = report.warrior().getColor();
+		//Color deathColor = report.warrior().getDColor();
+
+		//int colorInt = getIntFromColor(aliveColor .red(), aliveColor .green(), aliveColor .blue());
+		//int dcolorInt = getIntFromColor(deathColor.red(), deathColor.green(), deathColor.blue());
+
+		aliveColor = report.warrior().getColor();
+		deathColor = report.warrior().getDColor();
+
+		colorInt = getIntFromColor(aliveColor .red(), aliveColor .green(), aliveColor .blue());
+		dcolorInt = getIntFromColor(deathColor.red(), deathColor.green(), deathColor.blue());
+
+		paint.setColor(colorInt);
+
 		
 		addr = report.addrRead();
 		for (i=0; i < addr.length; i++)
@@ -87,7 +114,7 @@ public class CoreDisplay extends Canvas implements StepListener
 			y = (addr[i] / (width /3)) * 3;
 			x = (addr[i] % (width /3)) * 3;
 			
-			buffer.drawLine(x, y, x, y);
+			buffer.drawLine(x, y, x, y, paint);
 		}
 		
 		addr = report.addrWrite();
@@ -96,7 +123,7 @@ public class CoreDisplay extends Canvas implements StepListener
 			y = (addr[i] / (width /3)) * 3;
 			x = (addr[i] % (width /3)) * 3;
 			
-			buffer.drawLine(x+1, y, x, y+1);
+			buffer.drawLine(x+1, y, x, y+1, paint);
 		}
 
 		addr = report.addrDec();
@@ -105,7 +132,7 @@ public class CoreDisplay extends Canvas implements StepListener
 			y = (addr[i] / (width /3)) * 3;
 			x = (addr[i] % (width /3)) * 3;
 			
-			buffer.drawLine(x, y, x+1, y);
+			buffer.drawLine(x, y, x+1, y, paint);
 		}
 		
 		addr = report.addrInc();
@@ -114,7 +141,7 @@ public class CoreDisplay extends Canvas implements StepListener
 			y = (addr[i] / (width /3)) * 3;
 			x = (addr[i] % (width /3)) * 3;
 			
-			buffer.drawLine(x, y, x+1, y);
+			buffer.drawLine(x, y, x+1, y, paint);
 		}
 		
 		if ((i = report.addrExec()) != -1)
@@ -122,9 +149,9 @@ public class CoreDisplay extends Canvas implements StepListener
 			y = (i / (width /3)) * 3;
 			x = (i % (width /3)) * 3;
 			
-			if (report.pDeath()) buffer.setColor(report.warrior().getDColor());
-			buffer.drawLine(x, y, x+1, y);
-			buffer.drawLine(x, y+1, x+1, y+1);
+			if (report.pDeath()) paint.setColor(dcolorInt);
+			buffer.drawLine(x, y, x+1, y, paint);
+			buffer.drawLine(x, y+1, x+1, y+1, paint);
 		}
 		
 		return;
@@ -135,17 +162,19 @@ public class CoreDisplay extends Canvas implements StepListener
 	 */
 	public void clear()
 	{
-		if (offScreen == null)
-			return;
+		//if (offScreen == null)
+		//	return;
 		
-		buffer.setColor(background);
-		buffer.fillRect(0, 0, width, height);
+		//buffer.setColor(background);
+		paint.setColor(backgroundInt);
+		buffer.drawRect(0, 0, width, height, paint);
 	}
 
 	/**
 	 * paint the display on the screen
-	 * @param java.awt.Graphics screen - Graphics context to paint to
+	 * @param android.graphics screen - Graphics context to paint to
 	 */
+	/*
 	public void paint(Graphics screen)
 	{
 		if (offScreen == null)
@@ -157,54 +186,73 @@ public class CoreDisplay extends Canvas implements StepListener
 		}
 
 
-		screen.drawImage(offScreen, 0, 0, this);
+		//screen.drawImage(offScreen, 0, 0, this);
 		
 		System.out.println("paint size =" + getSize());
 		return;
 	}
-	
+	*/
+
 	/**
 	 * Get the maximum size for the display
 	 * @return java.awt.Dimension - maximum size
 	 */
+	/*
 	public Dimension getMaximumSize()
 	{
 		return new Dimension(width, height);
 	}
-	
+	*/
 	/**
 	 * Get the preffered size for the display
 	 * @return java.awt.Dimension - preferred size
 	 */
+	/*
 	public Dimension getPreferredSize()
 	{
 		return new Dimension(width, height);
 	}
-	
+	*/
 	/**
 	 * Get the minimum size for the display
 	 * @return java.awt.Dimension - minimum size
 	 */
+	/*
 	public Dimension getMinimumSize()
 	{
 		return new Dimension(width, height);
 	}
-	
+	*/
 	/**
 	 * Get X alignment the display wants in the layout. Asks for a center alignment.
 	 * @return float - X alignment (0.5)
 	 */
+	/*
 	public float getAlignmentX()
 	{
 		return 0.5F;
 	}
-	
+	*/
 	/**
 	 * Get Y alignment the display wants in the layout. Asks for a center alignment.
 	 * @return float - Y alignment (0.5)
 	 */
+	/*
 	public float getAlignmentY()
 	{
 		return 0.5F;
+	}
+	*/
+
+	public int getIntFromColor(float Red, float Green, float Blue){
+		int R = Math.round(255 * Red);
+		int G = Math.round(255 * Green);
+		int B = Math.round(255 * Blue);
+
+		R = (R << 16) & 0x00FF0000;
+		G = (G << 8) & 0x0000FF00;
+		B = B & 0x000000FF;
+
+		return 0xFF000000 | R | G | B;
 	}
 }

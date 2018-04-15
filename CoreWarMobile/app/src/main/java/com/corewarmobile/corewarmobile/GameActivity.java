@@ -6,7 +6,6 @@
 
  */
 
-
 package com.corewarmobile.corewarmobile;
 
 import android.content.Context;
@@ -17,6 +16,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Matrix;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;

@@ -23,25 +23,31 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- */
+ *//*
+
  
 package frontend;
 
-import java.awt.*;
+//import java.awt.*;
+import android.graphics.*;
 
+*/
 /**
  * A label displaying the current round and cycle.
- */
+ *//*
+
 public class RoundCycleCounter extends Label implements CycleListener, RoundListener
 {
 	protected int cycle, round;
 	private boolean changed;
 	
-	/**
+	*/
+/**
 	 * Creates a new Round/Cycle counter and places it in a container.
 	 * @param frontend.FrontEndManager man - frontend manager to register, as a round and cycle listener, with.
 	 * @param java.awt.Container con - container to place in.
-	 */
+	 *//*
+
 	public RoundCycleCounter(FrontEndManager man, Container con)
 	{
 		super("Round #0000, Cycle #000000", Label.CENTER);
@@ -58,10 +64,12 @@ public class RoundCycleCounter extends Label implements CycleListener, RoundList
 		return;
 	}
 	
-	/**
+	*/
+/**
 	 * CycleListener method.
 	 * @param int c - number of cycles completed.
-	 */
+	 *//*
+
 	public void cycleFinished(int c)
 	{
 		cycle = c+1;
@@ -69,10 +77,12 @@ public class RoundCycleCounter extends Label implements CycleListener, RoundList
 		return;
 	}
 	
-	/**
+	*/
+/**
 	 * RoundListener method.
 	 * @param int r - number of rounds completed.
-	 */
+	 *//*
+
 	public void roundResults(int r)
 	{
 		round = r+2;
@@ -80,10 +90,12 @@ public class RoundCycleCounter extends Label implements CycleListener, RoundList
 		return;
 	}
 	
-	/**
+	*/
+/**
 	 * java.awt.Component method overwridden to display round and cycle number.
 	 * @param java.awt.Graphics g - graphics context to draw to.
-	 */
+	 *//*
+
 	public void paint(Graphics g)
 	{
 		if (changed)
@@ -96,3 +108,4 @@ public class RoundCycleCounter extends Label implements CycleListener, RoundList
 		return;
 	} 
 }
+*/
