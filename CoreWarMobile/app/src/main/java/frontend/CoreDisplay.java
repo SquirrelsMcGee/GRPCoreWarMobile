@@ -54,8 +54,8 @@ public class CoreDisplay extends Canvas implements StepListener
 
 
 	protected Paint paint = new Paint();
-	protected Color aliveColor;
-	protected Color deathColor;
+	protected int aliveColor;
+	protected int deathColor;
 
 	protected int colorInt;
 	protected int dcolorInt;
@@ -88,24 +88,11 @@ public class CoreDisplay extends Canvas implements StepListener
 		int i;
 		int x,y;
 		int addr[];
-		
-		//if (offScreen == null)
-		//	return;
-
-		//Paint paint = new Paint();
-		//Color aliveColor = report.warrior().getColor();
-		//Color deathColor = report.warrior().getDColor();
-
-		//int colorInt = getIntFromColor(aliveColor .red(), aliveColor .green(), aliveColor .blue());
-		//int dcolorInt = getIntFromColor(deathColor.red(), deathColor.green(), deathColor.blue());
 
 		aliveColor = report.warrior().getColor();
 		deathColor = report.warrior().getDColor();
 
-		colorInt = getIntFromColor(aliveColor .red(), aliveColor .green(), aliveColor .blue());
-		dcolorInt = getIntFromColor(deathColor.red(), deathColor.green(), deathColor.blue());
-
-		paint.setColor(colorInt);
+		paint.setColor(aliveColor);
 
 		
 		addr = report.addrRead();
@@ -149,7 +136,7 @@ public class CoreDisplay extends Canvas implements StepListener
 			y = (i / (width /3)) * 3;
 			x = (i % (width /3)) * 3;
 			
-			if (report.pDeath()) paint.setColor(dcolorInt);
+			if (report.pDeath()) paint.setColor(deathColor);
 			buffer.drawLine(x, y, x+1, y, paint);
 			buffer.drawLine(x, y+1, x+1, y+1, paint);
 		}

@@ -36,6 +36,7 @@ public class GameActivity extends AppCompatActivity {
     SurfaceHolder surfaceHolder;
     Canvas coreCanvas;
     Rect canvasDimensions;
+
     int count;
     int id;
     Paint paint = new Paint();

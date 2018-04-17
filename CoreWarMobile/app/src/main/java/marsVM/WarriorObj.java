@@ -46,12 +46,12 @@ public class WarriorObj
 	protected String name;
 	protected String author;
 
-	public Color myColor;
-	public Color dColor;
+	public int myColor;
+	public int dColor;
 	public int numProc;
 	public boolean Alive;
 	
-	public WarriorObj(Reader file, int maxLength, Color c, Color d)
+	public WarriorObj(Reader file, int maxLength, int c, int d)
 	{
 		myColor = c;
 		dColor = d;
@@ -92,12 +92,12 @@ public class WarriorObj
 		return wInst;
 	}
 	
-	public Color getColor()
+	public int getColor()
 	{
 		return myColor;
 	}
 	
-	public Color getDColor()
+	public int getDColor()
 	{
 		return dColor;
 	}
