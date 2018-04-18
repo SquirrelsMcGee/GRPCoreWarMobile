@@ -29,7 +29,7 @@ public class jMARS implements Runnable, FrontEndManager {
     SurfaceView surfaceView;
     Canvas frameCanvas;
 
-    static jMARS myApp;
+    //static jMARS myApp;
 
     // Common variables
     int maxProc;
@@ -54,15 +54,19 @@ public class jMARS implements Runnable, FrontEndManager {
 
     static Thread myThread;
 
-    Vector stepListeners;
-    Vector cycleListeners;
-    Vector roundListeners;
+    Vector<StepListener> stepListeners;
+    Vector<CycleListener> cycleListeners;
+    Vector<RoundListener> roundListeners;
+
+    Date startTime;
+    Date endTime;
+    double totalTime;
 
     public jMARS(SurfaceHolder arg_holder, SurfaceView arg_surfaceView)
     {
-        stepListeners = new Vector();
-        cycleListeners = new Vector();
-        roundListeners = new Vector();
+        stepListeners = new Vector<StepListener>();
+        cycleListeners = new Vector<CycleListener>();
+        roundListeners = new Vector<RoundListener>();
 
         //frameCanvas = bufferCanvas; // Updated to use Android canvas
     }
@@ -70,7 +74,7 @@ public class jMARS implements Runnable, FrontEndManager {
     void application_init()
     {
         boolean pspaceChanged = false;
-        Vector wArgs = new Vector();
+        Vector<Integer> wArgs = new Vector<Integer>();
 
         // Set defaults for various constants
         maxWarriorLength = 100;
@@ -111,7 +115,7 @@ public class jMARS implements Runnable, FrontEndManager {
             {
                 numWarriors++;
 
-                wArgs.addElement(new Integer(i));
+                wArgs.addElement(i);
             }
         }
 
@@ -127,7 +131,7 @@ public class jMARS implements Runnable, FrontEndManager {
         {
             try
             {
-                FileReader wFile = new FileReader(args[(((Integer) wArgs.elementAt(i)).intValue())]);
+                FileReader wFile = new FileReader(args[wArgs.elementAt(i)]);
                 warriors[i] = new WarriorObj(wFile, maxWarriorLength, wColors[i % numDefinedColors][0], wColors[i % numDefinedColors][1]);
                 warriors[i].initPSpace(pSpaceSize);
                 warriors[i].setPCell(0, -1);
@@ -139,6 +143,7 @@ public class jMARS implements Runnable, FrontEndManager {
         }
 
         coreDisplay = new CoreDisplay(this, surfaceView, coreSize, 100, 100);
+
         //roundCycleCounter = new RoundCycleCounter(this, this);
 
         //validate();
@@ -160,15 +165,92 @@ public class jMARS implements Runnable, FrontEndManager {
         myThread.setPriority(Thread.NORM_PRIORITY-1);
 
         myThread.start();
-        return;
     }
 
     public void run() {
+        startTime = new Date();
 
+        for (; roundNum<rounds; roundNum++)
+        {
+            for (; cycleNum<cycles; cycleNum++)
+            {
+                for (; warRun < runWarriors; warRun++)
+                {
+                    StepReport stats = MARS.executeInstr();
+
+                    WarriorObj war = stats.warrior();
+                    war.numProc = stats.numProc();
+
+                    if (stats.wDeath())
+                    {
+                        war.Alive = false;
+                        runWarriors--;
+                    }
+
+                    notifyStepListeners(stats);
+
+                }
+
+                notifyCycleListeners(cycleNum);
+                //repaint();
+
+                if (runWarriors <= minWarriors)
+                    break;
+
+                warRun = 0;
+
+            }
+
+            notifyRoundListeners(roundNum);
+
+            endTime = new Date();
+            totalTime = ((double) endTime.getTime() - (double) startTime.getTime()) / 1000;
+            System.out.println("Total time="+ totalTime +" Cycles="+ cycleNum +" avg. time/cycle="+ (totalTime/cycleNum));
+            startTime = new Date();
+
+            MARS.reset();
+            loadWarriors();
+            runWarriors = numWarriors;
+            coreDisplay.clear();
+
+
+            cycleNum = 0;
+        }
     }
 
 
+    void loadWarriors()
+    {
+        int[] location = new int[warriors.length];
 
+        if (!MARS.loadWarrior(warriors[0], 0))
+        {
+            System.out.println("ERROR: could not load warrior 1.");
+        }
+
+        for (int i=1, r=0; i<numWarriors; i++)
+        {
+            boolean validSpot;
+            do
+            {
+                validSpot = true;
+                r = (int) (Math.random() * coreSize);
+
+                if (r < minWarriorDistance || r > (coreSize - minWarriorDistance))
+                    validSpot = false;
+
+                for (int j=0; j < location.length; j++)
+                    if (r < (minWarriorDistance + location[j]) && r > (minWarriorDistance + location[j]))
+                        validSpot = false;
+
+            } while (!validSpot);
+
+            if (!MARS.loadWarrior(warriors[i], r))
+            {
+                System.out.println("ERROR: could not load warrior " + (i+1) + ".");
+            }
+        }
+    }
 
 
     public void registerStepListener(StepListener l) {
@@ -188,7 +270,6 @@ public class jMARS implements Runnable, FrontEndManager {
             StepListener j = (StepListener) e.nextElement();
             j.stepProcess(step);
         }
-        return;
     }
 
     protected void notifyCycleListeners(int cycle) {
@@ -196,7 +277,6 @@ public class jMARS implements Runnable, FrontEndManager {
             CycleListener j = (CycleListener) e.nextElement();
             j.cycleFinished(cycle);
         }
-        return;
     }
 
     protected void notifyRoundListeners(int round) {
@@ -204,7 +284,10 @@ public class jMARS implements Runnable, FrontEndManager {
             RoundListener j = (RoundListener) e.nextElement();
             j.roundResults(round);
         }
-        return;
+    }
+
+    public void screenClose() {
+        myThread.interrupt();
     }
 
 }
