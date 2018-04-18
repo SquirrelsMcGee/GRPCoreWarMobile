@@ -26,6 +26,7 @@ public class jMARS implements Runnable, FrontEndManager {
     String args[];
     //static Frame myFrame; // Unimplemented
 
+    SurfaceHolder surfaceHolder;
     SurfaceView surfaceView;
     Canvas frameCanvas;
 
