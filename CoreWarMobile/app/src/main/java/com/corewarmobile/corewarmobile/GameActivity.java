@@ -29,9 +29,17 @@ import android.util.DisplayMetrics;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import frontend.*;
+import marsVM.*;
+import assembler.*;
+import jMARS.*;
 
 public class GameActivity extends AppCompatActivity {
     private static Context context;
+
+
+    SurfaceView surface;
+    TextView progress;
 
     SurfaceHolder surfaceHolder;
     Canvas coreCanvas;
@@ -49,20 +57,37 @@ public class GameActivity extends AppCompatActivity {
     Bitmap bmp;
     Canvas bufferCanvas;
 
+    jMARS MARS;
+
+    // To write to the screen we use
+    // SurfaceView surface
+    // SurfaceHolder surfaceHolder;
+    // Canvas coreCanvas;
+    // Canvas bufferCanvas
+    // Rect canvasDimensions;
+
+    public static Context getContext() {
+        return context;
+    }
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GameActivity.context = getApplicationContext();
         setContentView(R.layout.activity_game);
 
-        final SurfaceView surface = (SurfaceView) findViewById(R.id.CoreSurface);
-        final TextView progress = (TextView) findViewById(R.id.progressLabel);
-        final Handler handler = new Handler();
+        surface = (SurfaceView) findViewById(R.id.CoreSurface);
+        progress = (TextView) findViewById(R.id.progressLabel);
         identityMatrix = new Matrix();
 
+        Handler handler = new Handler();
+
+        MARS = new jMARS(this);
+
+
+        /*
         final Runnable loop = new Runnable() {
             @Override
             public void run() {
-
 
                 id = count;
                 progress.setText("Start " + id);
@@ -88,6 +113,7 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         };
+        */
 
         surface.getHolder().addCallback(new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) {
@@ -121,11 +147,11 @@ public class GameActivity extends AppCompatActivity {
                 surfaceHolder.unlockCanvasAndPost(coreCanvas);
 
                 count = 0;
-                handler.postDelayed(loop, 500);
+                //handler.postDelayed(loop, 500);
             }
 
             public void surfaceDestroyed(SurfaceHolder holder) {
-                handler.removeCallbacks(loop);
+                //handler.removeCallbacks(loop);
             }
 
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {

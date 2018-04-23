@@ -1,11 +1,24 @@
 /**
  * Created by james on 17/04/2018.
  */
-import marsVM.*;
+package jMARS;
+
 import frontend.*;
+import marsVM.MarsVM;
+import marsVM.WarriorObj;
+
 import java.util.*;
+
 import android.graphics.*;
 import android.view.*;
+
+import android.content.Context;
+import com.corewarmobile.corewarmobile.R;
+import com.corewarmobile.corewarmobile.GameActivity;
+
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 
 import java.io.*;
 
@@ -63,8 +76,20 @@ public class jMARS implements Runnable, FrontEndManager {
     Date endTime;
     double totalTime;
 
-    public jMARS(SurfaceHolder arg_holder, SurfaceView arg_surfaceView)
+    // To write to the screen we use
+    // SurfaceView surface
+    // SurfaceHolder surfaceHolder;
+    // Canvas coreCanvas;
+    // Canvas bufferCanvas
+    // Rect canvasDimensions;
+    Context context;
+    GameActivity activity;
+
+    public jMARS(GameActivity superActivity)
     {
+        activity = superActivity;
+        context = GameActivity.getContext();
+
         stepListeners = new Vector<StepListener>();
         cycleListeners = new Vector<CycleListener>();
         roundListeners = new Vector<RoundListener>();
