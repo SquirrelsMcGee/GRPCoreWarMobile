@@ -41,9 +41,14 @@ public class GameActivity extends AppCompatActivity {
     SurfaceView surface;
     TextView progress;
 
-    SurfaceHolder surfaceHolder;
-    Canvas coreCanvas;
-    Rect canvasDimensions;
+    public SurfaceHolder surfaceHolder;
+    public Canvas coreCanvas;
+    public Canvas bufferCanvas;
+    public Rect canvasDimensions;
+
+    public Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+    public Bitmap bmp;
+
 
     int count;
     int id;
@@ -53,22 +58,9 @@ public class GameActivity extends AppCompatActivity {
 
     int canvasWidth, canvasHeight;
 
-    Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
-    Bitmap bmp;
-    Canvas bufferCanvas;
 
-    jMARS MARS;
 
-    // To write to the screen we use
-    // SurfaceView surface
-    // SurfaceHolder surfaceHolder;
-    // Canvas coreCanvas;
-    // Canvas bufferCanvas
-    // Rect canvasDimensions;
-
-    public static Context getContext() {
-        return context;
-    }
+    jMARS jmars;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,12 +71,9 @@ public class GameActivity extends AppCompatActivity {
         progress = (TextView) findViewById(R.id.progressLabel);
         identityMatrix = new Matrix();
 
-        Handler handler = new Handler();
-
-        MARS = new jMARS(this);
+        final Handler handler = new Handler();
 
 
-        /*
         final Runnable loop = new Runnable() {
             @Override
             public void run() {
@@ -113,7 +102,8 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         };
-        */
+
+        jmars = new jMARS(this);
 
         surface.getHolder().addCallback(new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) {
@@ -131,6 +121,13 @@ public class GameActivity extends AppCompatActivity {
 
                 progress.setText("Post");
 
+                jmars.test();
+                //bufferCanvas = jmars.bufferCanvas;
+
+                //coreCanvas = surfaceHolder.lockCanvas();
+                //coreCanvas.drawBitmap(bmp, identityMatrix, null);
+                //surfaceHolder.unlockCanvasAndPost(coreCanvas);
+
                 coreCanvas = surfaceHolder.lockCanvas();
 
                 for (int i = 0; i < 1000; i+=100) {
@@ -147,11 +144,12 @@ public class GameActivity extends AppCompatActivity {
                 surfaceHolder.unlockCanvasAndPost(coreCanvas);
 
                 count = 0;
-                //handler.postDelayed(loop, 500);
+                handler.postDelayed(loop, 500);
             }
 
             public void surfaceDestroyed(SurfaceHolder holder) {
-                //handler.removeCallbacks(loop);
+                handler.removeCallbacks(loop);
+                jmars.screenClose();
             }
 
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {

@@ -39,10 +39,6 @@ public class jMARS implements Runnable, FrontEndManager {
     String args[];
     //static Frame myFrame; // Unimplemented
 
-    SurfaceHolder surfaceHolder;
-    SurfaceView surfaceView;
-    Canvas frameCanvas;
-
     //static jMARS myApp;
 
     // Common variables
@@ -82,22 +78,51 @@ public class jMARS implements Runnable, FrontEndManager {
     // Canvas coreCanvas;
     // Canvas bufferCanvas
     // Rect canvasDimensions;
+    Paint paint = new Paint();
+
     Context context;
     GameActivity activity;
+
+    public SurfaceHolder surfaceHolder;
+    public SurfaceView surfaceView;
+    public Canvas coreCanvas;
+    public Canvas bufferCanvas;
+    public Matrix identityMatrix = new Matrix();
+    public Bitmap bmp;
 
     public jMARS(GameActivity superActivity)
     {
         activity = superActivity;
-        context = GameActivity.getContext();
 
-        stepListeners = new Vector<StepListener>();
-        cycleListeners = new Vector<CycleListener>();
-        roundListeners = new Vector<RoundListener>();
+        //surfaceHolder = activity.surfaceHolder;
+        //bufferCanvas = activity.bufferCanvas;
+        //context = activity.context;
+
+        stepListeners = new Vector<>();
+        cycleListeners = new Vector<>();
+        roundListeners = new Vector<>();
+
+
 
         //frameCanvas = bufferCanvas; // Updated to use Android canvas
     }
 
-    void application_init()
+    public void test() {
+
+        for (int i = 0; i < 1000; i+=100) {
+
+            Random rnd = new Random();
+            int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+            Rect rectangle = new Rect(i, 500, i+100, 600);
+            paint.setColor(color);
+
+            activity.bufferCanvas.drawRect(rectangle, paint);
+        }
+
+
+    }
+
+    public void application_init()
     {
         boolean pspaceChanged = false;
         Vector<Integer> wArgs = new Vector<Integer>();
@@ -245,7 +270,7 @@ public class jMARS implements Runnable, FrontEndManager {
     }
 
 
-    void loadWarriors()
+    public void loadWarriors()
     {
         int[] location = new int[warriors.length];
 
@@ -291,21 +316,21 @@ public class jMARS implements Runnable, FrontEndManager {
         roundListeners.addElement(r);
     }
 
-    protected void notifyStepListeners(StepReport step) {
+    private void notifyStepListeners(StepReport step) {
         for (Enumeration e = stepListeners.elements(); e.hasMoreElements(); ) {
             StepListener j = (StepListener) e.nextElement();
             j.stepProcess(step);
         }
     }
 
-    protected void notifyCycleListeners(int cycle) {
+    private void notifyCycleListeners(int cycle) {
         for (Enumeration e = cycleListeners.elements(); e.hasMoreElements(); ) {
             CycleListener j = (CycleListener) e.nextElement();
             j.cycleFinished(cycle);
         }
     }
 
-    protected void notifyRoundListeners(int round) {
+    private void notifyRoundListeners(int round) {
         for (Enumeration e = roundListeners.elements(); e.hasMoreElements(); ) {
             RoundListener j = (RoundListener) e.nextElement();
             j.roundResults(round);
