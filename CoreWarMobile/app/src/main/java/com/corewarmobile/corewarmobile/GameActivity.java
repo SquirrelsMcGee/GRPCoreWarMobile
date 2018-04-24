@@ -35,7 +35,7 @@ import assembler.*;
 import jMARS.*;
 
 public class GameActivity extends AppCompatActivity {
-    private static Context context;
+    public static Context context;
 
 
     SurfaceView surface;
@@ -57,7 +57,7 @@ public class GameActivity extends AppCompatActivity {
     Matrix identityMatrix;
 
     int canvasWidth, canvasHeight;
-
+    public CoreDisplay coreDisplay;
 
 
     jMARS jmars;
@@ -72,8 +72,6 @@ public class GameActivity extends AppCompatActivity {
         identityMatrix = new Matrix();
 
         final Handler handler = new Handler();
-
-
         final Runnable loop = new Runnable() {
             @Override
             public void run() {
@@ -104,6 +102,8 @@ public class GameActivity extends AppCompatActivity {
         };
 
         jmars = new jMARS(this);
+        coreDisplay = new CoreDisplay(this, jmars, surface, jmars.coreSize, 100, 100);
+
 
         surface.getHolder().addCallback(new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) {
@@ -167,6 +167,11 @@ public class GameActivity extends AppCompatActivity {
     public void Add(View view){
         Intent Barracks = new Intent(this, BarrackActivity.class);
         startActivity(Barracks);
+    }
+
+    public void RunGame(View view) {
+        jmars.application_init();
+        jmars.run();
     }
 
 }

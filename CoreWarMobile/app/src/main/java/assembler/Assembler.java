@@ -74,11 +74,14 @@ public class Assembler {
         try {
             begin:
             while (tok.nextToken() != StreamTokenizer.TT_EOF) {
+                System.out.println("Current Token = " + tok.toString() + " == mov :" + tok.sval.equals("mov"));
                 if (tok.ttype == ';')
                     pComment();
                 else if (tok.ttype == StreamTokenizer.TT_WORD && tok.sval.equals("org")) {
-                    if (tok.nextToken() != tok.TT_NUMBER)
+                    if (tok.nextToken() != tok.TT_NUMBER) {
+                        System.out.println("tok.nextToken() != tok.TT_NUMBER");
                         return false;
+                    }
 
                     start = (int) tok.nval;
 
@@ -88,6 +91,7 @@ public class Assembler {
                         pComment();
 
                 } else if (tok.ttype == StreamTokenizer.TT_WORD) {
+                    System.out.println("ttype == TT_WORD");
                     if (tok.sval.equals("mov"))
                         war[IP].opcode = marsVM.Memory.MOV;
                     else if (tok.sval.equals("add"))
@@ -129,22 +133,30 @@ public class Assembler {
                     else if (tok.sval.equals("end")) {
                         if (tok.nextToken() == tok.TT_NUMBER)
                             start = (int) tok.nval;
-
+                        System.out.println("tok.sval.equals('end')");
                         return true;
-                    } else
+                    } else {
+                        System.out.println("!tok.sval.equals('end')");
                         return false;
-
-                    if (!pModifier())
+                    }
+                    if (!pModifier()) {
+                        System.out.println("No modifier");
                         return false;
+                    }
 
-                    if (++IP > maxLength) return false;
+                    if (++IP > maxLength) {
+                        System.out.println("++IP > maxLength");
+                        return false;
+                    }
 
                     if (tok.ttype == ';')
                         pComment();
                 }
 
-                if (tok.ttype != tok.TT_EOL)
+                if (tok.ttype != tok.TT_EOL) {
+                    System.out.println("tok.ttype != tok.TT_EOL");
                     return false;
+                }
             }
 
         } catch (IOException e) {
@@ -182,9 +194,10 @@ public class Assembler {
 
     boolean pModifier() {
         try {
-            if (tok.nextToken() != '.')
+            if (tok.nextToken() != '.') {
+                System.out.println("tok.nextToken() != '.'");
                 return pAOperand();
-            else if (tok.nextToken() == tok.TT_WORD) {
+            }else if (tok.nextToken() == tok.TT_WORD) {
                 if (tok.sval.equals("a"))
                     war[IP].modifier = marsVM.Memory.mA;
                 else if (tok.sval.equals("b"))
@@ -197,8 +210,10 @@ public class Assembler {
                     war[IP].modifier = marsVM.Memory.mF;
                 else if (tok.sval.equals("x"))
                     war[IP].modifier = marsVM.Memory.mX;
-                else if (tok.sval.equals("i"))
+                else if (tok.sval.equals("i")) {
+                    System.out.println("sval == i");
                     war[IP].modifier = marsVM.Memory.mI;
+                }
                 else
                     return false;
 
@@ -318,6 +333,7 @@ public class Assembler {
 
 
     boolean pBOperand() {
+        System.out.println("pBOperand() token="+tok.toString());
         if (tok.ttype != tok.TT_NUMBER)
             return pBValue();
         switch (tok.ttype) {
@@ -395,6 +411,7 @@ public class Assembler {
     }
 
     boolean pBValue() {
+        System.out.println("pBValue() token="+tok.toString());
         if (tok.ttype != tok.TT_NUMBER)
             return false;
 

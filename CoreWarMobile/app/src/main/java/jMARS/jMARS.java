@@ -44,7 +44,7 @@ public class jMARS implements Runnable, FrontEndManager {
     // Common variables
     int maxProc;
     int pSpaceSize;
-    int coreSize;
+    public int coreSize;
     int cycles;
     int rounds;
     int maxWarriorLength;
@@ -134,7 +134,9 @@ public class jMARS implements Runnable, FrontEndManager {
         coreSize = 8000;
         cycles = 80000;
         rounds = 10;
+        numWarriors = 2;
 
+        /*
         for (int i=0; i<args.length; i++)
         {
             if (args[i].charAt(0) == '-')
@@ -168,7 +170,7 @@ public class jMARS implements Runnable, FrontEndManager {
 
                 wArgs.addElement(i);
             }
-        }
+        }*/
 
         if (!pspaceChanged)
             pSpaceSize = coreSize / 16;
@@ -178,12 +180,53 @@ public class jMARS implements Runnable, FrontEndManager {
 
         warriors = new WarriorObj[numWarriors];
 
-        for (int i=0; i<numWarriors; i++)
+        String filename = "imp.red";
+        String filename2 = "imp2.red";
+
+        String fileContents = "mov.i 0,1";
+
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = activity.context.openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(fileContents.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            outputStream = activity.context.openFileOutput(filename2, Context.MODE_PRIVATE);
+            outputStream.write(fileContents.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        File directory = activity.context.getFilesDir();
+
+        File yourFile = new File( directory.getAbsolutePath() + "/" + filename );
+        try {
+            System.out.println("Content: " + getStringFromFile(yourFile));
+        } catch (Exception e) {
+            System.out.println("Failed rip");
+            System.exit(0);
+
+        }
+
+        for (int i=0; i < numWarriors; i++)
         {
             try
             {
-                FileReader wFile = new FileReader(args[wArgs.elementAt(i)]);
-                warriors[i] = new WarriorObj(wFile, maxWarriorLength, wColors[i % numDefinedColors][0], wColors[i % numDefinedColors][1]);
+                Reader wFile = new FileReader(directory + "/" + filename);
+                Reader wFile2 = new FileReader(directory + "/" + filename2);
+                Reader useFile = wFile;
+                if (i == 1) useFile = wFile2;
+                System.out.println(directory + "/" + filename);
+
+                warriors[i] = new WarriorObj(useFile, maxWarriorLength, wColors[i % numDefinedColors][0], wColors[i % numDefinedColors][1]);
                 warriors[i].initPSpace(pSpaceSize);
                 warriors[i].setPCell(0, -1);
             } catch (FileNotFoundException e)
@@ -192,8 +235,11 @@ public class jMARS implements Runnable, FrontEndManager {
                 System.exit(0);
             }
         }
+        System.out.println("Warrior [0] Alive = " + warriors[0].Alive);
 
-        coreDisplay = new CoreDisplay(this, surfaceView, coreSize, 100, 100);
+
+        //coreDisplay = new CoreDisplay(activity,this, surfaceView, coreSize, 100, 100);
+        coreDisplay = activity.coreDisplay;
 
         //roundCycleCounter = new RoundCycleCounter(this, this);
 
@@ -211,22 +257,62 @@ public class jMARS implements Runnable, FrontEndManager {
         cycleNum = 0;
         warRun = 0;
 
+        /*
         myThread = new Thread(this);
 
         myThread.setPriority(Thread.NORM_PRIORITY-1);
 
         myThread.start();
+        */
+    }
+
+    public static String getStringFromFile (File file) throws Exception {
+        File fl = file;
+        FileInputStream fin = new FileInputStream(fl);
+        String ret = convertStreamToString(fin);
+        //Make sure you close all streams.
+        fin.close();
+        return ret;
+    }
+
+    public static String convertStreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
     }
 
     public void run() {
         startTime = new Date();
 
+        /*final Handler handler = new Handler();
+        final Runnable roundLoop = new Runnable() {
+            @Override
+            public void run() {
+
+                if (roundNum < rounds) {
+                    roundNum++;
+                    handler.postDelayed(this, 500);
+
+                }
+            }
+        };*/
+
+
         for (; roundNum<rounds; roundNum++)
         {
+            System.out.println("roundNum=" + roundNum);
             for (; cycleNum<cycles; cycleNum++)
             {
+                System.out.println("cycleNum=" + cycleNum);
                 for (; warRun < runWarriors; warRun++)
                 {
+                    System.out.println("warRun=" + warRun);
+
                     StepReport stats = MARS.executeInstr();
 
                     WarriorObj war = stats.warrior();
@@ -252,7 +338,7 @@ public class jMARS implements Runnable, FrontEndManager {
 
             }
 
-            notifyRoundListeners(roundNum);
+            //notifyRoundListeners(roundNum);
 
             endTime = new Date();
             totalTime = ((double) endTime.getTime() - (double) startTime.getTime()) / 1000;
@@ -262,7 +348,7 @@ public class jMARS implements Runnable, FrontEndManager {
             MARS.reset();
             loadWarriors();
             runWarriors = numWarriors;
-            coreDisplay.clear();
+            activity.coreDisplay.clear();
 
 
             cycleNum = 0;

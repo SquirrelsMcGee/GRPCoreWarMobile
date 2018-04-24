@@ -32,6 +32,8 @@ import android.graphics.*;
 import android.os.Build;
 import android.view.SurfaceView;
 
+import com.corewarmobile.corewarmobile.GameActivity;
+
 /**
  * A pMARS style core display
  */
@@ -50,9 +52,7 @@ public class CoreDisplay extends Canvas implements StepListener
 	//protected Image offScreen;
 	//protected Graphics buffer;
 
-	protected Canvas buffer;
-
-
+	GameActivity activity;
 	protected Paint paint = new Paint();
 	protected int aliveColor;
 	protected int deathColor;
@@ -62,13 +62,17 @@ public class CoreDisplay extends Canvas implements StepListener
 	
 	/**
 	 * Create a new core display for a specified core size and width.
-	 * @param FrontEndManager man - Object managing the front end components.
-	 * @param SurfaceView surface - Surface to draw on
-	 * @param int coreS - Size of core to be displayed.
-	 * @param int w - desired width of display.
+	 * //@param FrontEndManager man - Object managing the front end components.
+	 * //@param SurfaceView surface - Surface to draw on
+	 * //@param int coreS - Size of core to be displayed.
+	 * //@param int w - desired width of display.
 	 */
-	public CoreDisplay(FrontEndManager man, SurfaceView surface, int coreS, int w, int h)
+	public CoreDisplay(GameActivity superActivity, FrontEndManager man, SurfaceView surface, int coreS, int w, int h)
 	{
+		activity = superActivity;
+		if (activity == null) {
+			System.out.println("Failed to get activity");
+		}
 		coreSize = coreS;
 		width = w;
 		height = ((coreSize / (width /3)) +1) *3;
@@ -80,7 +84,7 @@ public class CoreDisplay extends Canvas implements StepListener
 	
 	/**
 	 * Update display with info from a round.
-	 * @param marsVM.StatReport report - info from round
+	 * //@param marsVM.StatReport report - info from round
 	 */
 	@TargetApi(Build.VERSION_CODES.O)
 	public void stepProcess(StepReport report)
@@ -100,8 +104,8 @@ public class CoreDisplay extends Canvas implements StepListener
 		{
 			y = (addr[i] / (width /3)) * 3;
 			x = (addr[i] % (width /3)) * 3;
-			
-			buffer.drawLine(x, y, x, y, paint);
+
+			activity.bufferCanvas.drawLine(x, y, x, y, paint);
 		}
 		
 		addr = report.addrWrite();
@@ -109,8 +113,8 @@ public class CoreDisplay extends Canvas implements StepListener
 		{
 			y = (addr[i] / (width /3)) * 3;
 			x = (addr[i] % (width /3)) * 3;
-			
-			buffer.drawLine(x+1, y, x, y+1, paint);
+
+			activity.bufferCanvas.drawLine(x+1, y, x, y+1, paint);
 		}
 
 		addr = report.addrDec();
@@ -118,8 +122,8 @@ public class CoreDisplay extends Canvas implements StepListener
 		{
 			y = (addr[i] / (width /3)) * 3;
 			x = (addr[i] % (width /3)) * 3;
-			
-			buffer.drawLine(x, y, x+1, y, paint);
+
+			activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
 		}
 		
 		addr = report.addrInc();
@@ -127,8 +131,8 @@ public class CoreDisplay extends Canvas implements StepListener
 		{
 			y = (addr[i] / (width /3)) * 3;
 			x = (addr[i] % (width /3)) * 3;
-			
-			buffer.drawLine(x, y, x+1, y, paint);
+
+			activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
 		}
 		
 		if ((i = report.addrExec()) != -1)
@@ -137,8 +141,8 @@ public class CoreDisplay extends Canvas implements StepListener
 			x = (i % (width /3)) * 3;
 			
 			if (report.pDeath()) paint.setColor(deathColor);
-			buffer.drawLine(x, y, x+1, y, paint);
-			buffer.drawLine(x, y+1, x+1, y+1, paint);
+			activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
+			activity.bufferCanvas.drawLine(x, y+1, x+1, y+1, paint);
 		}
 		
 		return;
@@ -154,7 +158,7 @@ public class CoreDisplay extends Canvas implements StepListener
 		
 		//buffer.setColor(background);
 		paint.setColor(backgroundInt);
-		buffer.drawRect(0, 0, width, height, paint);
+		activity.bufferCanvas.drawRect(0, 0, width, height, paint);
 	}
 
 	/**

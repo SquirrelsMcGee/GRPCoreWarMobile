@@ -57,8 +57,10 @@ public class WarriorObj
 		dColor = d;
 		
 		Assembler parser = new Assembler(file, maxLength);
-		
-		if (parser.assemble())
+
+		Boolean alive = parser.assemble();
+
+		if (alive)
 		{
 			wInst = parser.getWarrior();
 			wOffset = parser.getOffset();
