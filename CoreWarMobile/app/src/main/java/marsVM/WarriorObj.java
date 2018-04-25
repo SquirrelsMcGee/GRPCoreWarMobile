@@ -33,9 +33,9 @@
 package marsVM;
 
 import assembler.Assembler;
- 
-import android.graphics.Color;
-import java.io.Reader;
+
+import java.util.*;
+import java.io.*;
 
 public class WarriorObj
 {
@@ -51,12 +51,12 @@ public class WarriorObj
 	public int numProc;
 	public boolean Alive;
 	
-	public WarriorObj(Reader file, int maxLength, int c, int d)
+	public WarriorObj(InputStream stream, int maxLength, int c, int d)
 	{
 		myColor = c;
 		dColor = d;
 		
-		Assembler parser = new Assembler(file, maxLength);
+		Assembler parser = new Assembler(stream, maxLength);
 
 		Boolean alive = parser.assemble();
 
@@ -72,6 +72,9 @@ public class WarriorObj
 			wInst = new Memory[0];
 			wOffset = 0;
 			Alive = false;
+
+			name = parser.getName();
+			author = parser.getAuthor();
 		}
 		
 	}

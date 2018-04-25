@@ -13,7 +13,6 @@ import android.graphics.*;
 import android.view.*;
 
 import android.content.Context;
-import com.corewarmobile.corewarmobile.R;
 import com.corewarmobile.corewarmobile.GameActivity;
 
 import android.os.Bundle;
@@ -26,12 +25,17 @@ public class jMARS implements Runnable, FrontEndManager {
 
     // constants
     static final int numDefinedColors = 4;
-    static final int wColors[][] = {
+    /*static final int wColors[][] = {
             {Color.GREEN, Color.YELLOW},
             {Color.RED, Color.MAGENTA},
             {Color.CYAN, Color.BLUE},
-            {Color.GRAY, Color.DKGRAY}};
-
+            {Color.GRAY, Color.DKGRAY}};*/
+    static final int wColors[][] = {
+            {0x00FF00, 0xFFFF00},
+            {0xFF0000, 0xFF00FF},
+            {0x00FFFF, 0x0000FF},
+            {0x808080, 0x696969},
+    };
     // static variables
     static boolean inApplet = true;
 
@@ -133,7 +137,7 @@ public class jMARS implements Runnable, FrontEndManager {
         maxProc = 8000;
         coreSize = 8000;
         cycles = 80000;
-        rounds = 10;
+        rounds = 1;
         numWarriors = 2;
 
         /*
@@ -171,6 +175,7 @@ public class jMARS implements Runnable, FrontEndManager {
                 wArgs.addElement(i);
             }
         }*/
+        //numWarriors++;
 
         if (!pspaceChanged)
             pSpaceSize = coreSize / 16;
@@ -180,62 +185,35 @@ public class jMARS implements Runnable, FrontEndManager {
 
         warriors = new WarriorObj[numWarriors];
 
-        String filename = "imp.red";
-        String filename2 = "imp2.red";
+        String filenames[] = {"imp.red","imp2.red"};
 
-        String fileContents = "mov.i 0,1";
+        InputStream iS;
 
-        FileOutputStream outputStream;
-
-        try {
-            outputStream = activity.context.openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(fileContents.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            outputStream = activity.context.openFileOutput(filename2, Context.MODE_PRIVATE);
-            outputStream.write(fileContents.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-
-        File directory = activity.context.getFilesDir();
-
-        File yourFile = new File( directory.getAbsolutePath() + "/" + filename );
-        try {
-            System.out.println("Content: " + getStringFromFile(yourFile));
-        } catch (Exception e) {
-            System.out.println("Failed rip");
-            System.exit(0);
-
-        }
+        //if (true)return;
 
         for (int i=0; i < numWarriors; i++)
         {
             try
             {
-                Reader wFile = new FileReader(directory + "/" + filename);
-                Reader wFile2 = new FileReader(directory + "/" + filename2);
-                Reader useFile = wFile;
-                if (i == 1) useFile = wFile2;
-                System.out.println(directory + "/" + filename);
-
-                warriors[i] = new WarriorObj(useFile, maxWarriorLength, wColors[i % numDefinedColors][0], wColors[i % numDefinedColors][1]);
+                InputStream inputStream = activity.getAssets().open(filenames[i]);
+                Integer aColor = wColors[i % numDefinedColors][0];
+                Integer dColor = wColors[i % numDefinedColors][1];
+                System.out.println("Warrior [" + i + "] colours are:" + aColor + " " + dColor );
+                warriors[i] = new WarriorObj(inputStream, maxWarriorLength, aColor, dColor);
                 warriors[i].initPSpace(pSpaceSize);
                 warriors[i].setPCell(0, -1);
-            } catch (FileNotFoundException e)
+            } catch (Exception e)
             {
-                System.out.println("Could not find warrior file " + args[i]);
-                System.exit(0);
+                //System.out.println("Could not find warrior file " + args[i]);
+                System.out.print("\n\n\nFUCK FUCK FUCK it didn't work i=" + i + "\n\n\n");
+                e.printStackTrace();
+                //System.exit(0);
             }
         }
-        System.out.println("Warrior [0] Alive = " + warriors[0].Alive);
+
+        System.out.println("Warrior [0] author = " + warriors[0].getAuthor());
+        warriors[0].Alive = true;
+        warriors[1].Alive = true;
 
 
         //coreDisplay = new CoreDisplay(activity,this, surfaceView, coreSize, 100, 100);
@@ -257,13 +235,13 @@ public class jMARS implements Runnable, FrontEndManager {
         cycleNum = 0;
         warRun = 0;
 
-        /*
+        //if (true) return;
+
+    }
+    public void startThread() {
         myThread = new Thread(this);
 
-        myThread.setPriority(Thread.NORM_PRIORITY-1);
-
-        myThread.start();
-        */
+        myThread.run();
     }
 
     public static String getStringFromFile (File file) throws Exception {
@@ -289,47 +267,28 @@ public class jMARS implements Runnable, FrontEndManager {
     public void run() {
         startTime = new Date();
 
-        /*final Handler handler = new Handler();
-        final Runnable roundLoop = new Runnable() {
-            @Override
-            public void run() {
-
-                if (roundNum < rounds) {
-                    roundNum++;
-                    handler.postDelayed(this, 500);
-
-                }
-            }
-        };*/
-
-
-        for (; roundNum<rounds; roundNum++)
+        for (; roundNum < rounds; roundNum++)
         {
-            System.out.println("roundNum=" + roundNum);
-            for (; cycleNum<cycles; cycleNum++)
-            {
-                System.out.println("cycleNum=" + cycleNum);
-                for (; warRun < runWarriors; warRun++)
-                {
+            for (; cycleNum < cycles; cycleNum++) {
+                for (; warRun < runWarriors; warRun++) {
                     System.out.println("warRun=" + warRun);
 
                     StepReport stats = MARS.executeInstr();
 
                     WarriorObj war = stats.warrior();
+
                     war.numProc = stats.numProc();
 
                     if (stats.wDeath())
                     {
+                        System.out.println("Warrior["+warRun+"] died");
                         war.Alive = false;
                         runWarriors--;
                     }
-
                     notifyStepListeners(stats);
-
                 }
 
                 notifyCycleListeners(cycleNum);
-                //repaint();
 
                 if (runWarriors <= minWarriors)
                     break;
@@ -337,8 +296,6 @@ public class jMARS implements Runnable, FrontEndManager {
                 warRun = 0;
 
             }
-
-            //notifyRoundListeners(roundNum);
 
             endTime = new Date();
             totalTime = ((double) endTime.getTime() - (double) startTime.getTime()) / 1000;
@@ -349,7 +306,6 @@ public class jMARS implements Runnable, FrontEndManager {
             loadWarriors();
             runWarriors = numWarriors;
             activity.coreDisplay.clear();
-
 
             cycleNum = 0;
         }
@@ -372,7 +328,7 @@ public class jMARS implements Runnable, FrontEndManager {
             {
                 validSpot = true;
                 r = (int) (Math.random() * coreSize);
-
+                System.out.println(r);
                 if (r < minWarriorDistance || r > (coreSize - minWarriorDistance))
                     validSpot = false;
 

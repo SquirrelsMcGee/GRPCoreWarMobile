@@ -59,7 +59,7 @@ public class GameActivity extends AppCompatActivity {
     int canvasWidth, canvasHeight;
     public CoreDisplay coreDisplay;
 
-
+    GameActivity gameActivity = this;
     jMARS jmars;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,18 +102,22 @@ public class GameActivity extends AppCompatActivity {
         };
 
         jmars = new jMARS(this);
-        coreDisplay = new CoreDisplay(this, jmars, surface, jmars.coreSize, 100, 100);
+
 
 
         surface.getHolder().addCallback(new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) {
-
+                jmars.application_init();
 
                 surfaceHolder = holder;
                 canvasDimensions = holder.getSurfaceFrame();
 
+
+
                 canvasWidth = canvasDimensions.width();
                 canvasHeight = canvasDimensions.height();
+
+                coreDisplay = new CoreDisplay(gameActivity, jmars, surface, jmars.coreSize, canvasWidth, canvasHeight);
 
                 bmp = Bitmap.createBitmap(canvasWidth, canvasHeight, conf); // this creates a MUTABLE bitmap
                 bufferCanvas = new Canvas(bmp);
@@ -144,7 +148,7 @@ public class GameActivity extends AppCompatActivity {
                 surfaceHolder.unlockCanvasAndPost(coreCanvas);
 
                 count = 0;
-                handler.postDelayed(loop, 500);
+                //handler.postDelayed(loop, 500);
             }
 
             public void surfaceDestroyed(SurfaceHolder holder) {
@@ -170,8 +174,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void RunGame(View view) {
-        jmars.application_init();
-        jmars.run();
+        jmars.startThread();
+        //jmars.run();
     }
 
 }

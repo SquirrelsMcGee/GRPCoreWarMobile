@@ -18,7 +18,8 @@ public class Assembler {
     protected String author;
 
 
-    public Assembler(Reader reader, int maxl) {
+    public Assembler(InputStream stream, int maxl) {
+        Reader reader = new InputStreamReader(stream);
         in = new BufferedReader(reader);
         tok = new StreamTokenizer(in);
         tok.lowerCaseMode(true);
@@ -53,17 +54,11 @@ public class Assembler {
     }
 
     public String getName() {
-        if (name != null)
-            return new String(name);
-
-        return "";
+        return name;
     }
 
     public String getAuthor() {
-        if (author != null)
-            return new String(author);
-
-        return "";
+        return author;
     }
 
     public int length() {
@@ -74,24 +69,25 @@ public class Assembler {
         try {
             begin:
             while (tok.nextToken() != StreamTokenizer.TT_EOF) {
-                System.out.println("Current Token = " + tok.toString() + " == mov :" + tok.sval.equals("mov"));
+                System.out.println(tok.toString() + " " + tok.ttype);
                 if (tok.ttype == ';')
                     pComment();
                 else if (tok.ttype == StreamTokenizer.TT_WORD && tok.sval.equals("org")) {
                     if (tok.nextToken() != tok.TT_NUMBER) {
-                        System.out.println("tok.nextToken() != tok.TT_NUMBER");
+                        System.out.println("It's a number="+tok.toString() + " " + tok.ttype);
                         return false;
                     }
 
                     start = (int) tok.nval;
 
                     tok.nextToken();
+                    System.out.println(tok.toString() + " " + tok.ttype);
 
                     if (tok.ttype == ';')
                         pComment();
 
                 } else if (tok.ttype == StreamTokenizer.TT_WORD) {
-                    System.out.println("ttype == TT_WORD");
+                    //System.out.println("ttype == TT_WORD");
                     if (tok.sval.equals("mov"))
                         war[IP].opcode = marsVM.Memory.MOV;
                     else if (tok.sval.equals("add"))
@@ -133,7 +129,8 @@ public class Assembler {
                     else if (tok.sval.equals("end")) {
                         if (tok.nextToken() == tok.TT_NUMBER)
                             start = (int) tok.nval;
-                        System.out.println("tok.sval.equals('end')");
+                        //System.out.println("tok.sval.equals('end')");
+                        System.out.println(tok.toString() + " " + tok.ttype);
                         return true;
                     } else {
                         System.out.println("!tok.sval.equals('end')");
@@ -149,12 +146,13 @@ public class Assembler {
                         return false;
                     }
 
-                    if (tok.ttype == ';')
+                    if (tok.ttype == ';') {
                         pComment();
+                    }
                 }
 
                 if (tok.ttype != tok.TT_EOL) {
-                    System.out.println("tok.ttype != tok.TT_EOL");
+                    //System.out.println("tok.ttype != tok.TT_EOL");
                     return false;
                 }
             }
@@ -169,23 +167,27 @@ public class Assembler {
 
     void pComment() {
         // this function is in place to get meta data
+        String line;
         try {
             if (tok.nextToken() == tok.TT_WORD) {
+                System.out.println(tok.toString() + " " + tok.ttype);
                 if (tok.sval.equals("name")) {
-                    name = in.readLine();
+                    line = name = in.readLine();
                 } else if (tok.sval.equals("author")) {
-                    author = in.readLine();
+                    line = author = in.readLine();
+
                 } else {
-                    in.readLine();
+                    line = in.readLine();
                 }
             } else {
-                in.readLine();
+                line = in.readLine();
             }
 
             tok.ttype = tok.TT_EOL;
+            System.out.println("line=" + line);
 
         } catch (IOException e) {
-            System.out.println(e.toString());
+            e.printStackTrace();
             return;
         }
 
@@ -195,34 +197,38 @@ public class Assembler {
     boolean pModifier() {
         try {
             if (tok.nextToken() != '.') {
-                System.out.println("tok.nextToken() != '.'");
+                System.out.println("pModifier(): " + tok.toString() + " " + tok.ttype);
                 return pAOperand();
-            }else if (tok.nextToken() == tok.TT_WORD) {
-                if (tok.sval.equals("a"))
+            } else if (tok.nextToken() == tok.TT_WORD) {
+                System.out.println(tok.toString() + " " + tok.ttype);
+
+                if (tok.sval.equals("a")) {
                     war[IP].modifier = marsVM.Memory.mA;
-                else if (tok.sval.equals("b"))
+                } else if (tok.sval.equals("b")) {
                     war[IP].modifier = marsVM.Memory.mB;
-                else if (tok.sval.equals("ab"))
+                } else if (tok.sval.equals("ab")) {
                     war[IP].modifier = marsVM.Memory.mAB;
-                else if (tok.sval.equals("ba"))
+                } else if (tok.sval.equals("ba")) {
                     war[IP].modifier = marsVM.Memory.mBA;
-                else if (tok.sval.equals("f"))
+                } else if (tok.sval.equals("f")) {
                     war[IP].modifier = marsVM.Memory.mF;
-                else if (tok.sval.equals("x"))
+                } else if (tok.sval.equals("x")) {
                     war[IP].modifier = marsVM.Memory.mX;
-                else if (tok.sval.equals("i")) {
-                    System.out.println("sval == i");
+                } else if (tok.sval.equals("i")) {
                     war[IP].modifier = marsVM.Memory.mI;
-                }
-                else
+                } else {
+                    System.out.println("pModifier(): returning false at line 220" );
                     return false;
-
+                }
                 tok.nextToken();
+                System.out.println(war[IP].modifier);
+                System.out.println("pModifier() returning pAOperand(): " + tok.toString() + " " + tok.ttype);
 
                 return pAOperand();
-            } else
+            } else {
+                System.out.println("pModifier(): returning false at line 228");
                 return false;
-
+            }
         } catch (IOException e) {
             System.out.println(e.toString());
             return false;
@@ -232,9 +238,10 @@ public class Assembler {
 
     boolean pAOperand() {
         switch (tok.ttype) {
-            case StreamTokenizer.TT_NUMBER:
+            case StreamTokenizer.TT_NUMBER: {
+                System.out.println("pAOperand() returning pAValue()");
                 return pAValue();
-
+            }
             case '#':
                 war[IP].aIndir = marsVM.Memory.IMMEDIATE;
                 war[IP].aTiming = marsVM.Memory.PRE;
@@ -292,12 +299,14 @@ public class Assembler {
                 break;
 
             default:
+                System.out.println("pAOperand() defaulting to false");
                 return false;
 
         }
 
         try {
             tok.nextToken();
+            System.out.println(tok.toString() + " " + tok.ttype);
         } catch (IOException e) {
             System.out.println(e.toString());
             return false;
@@ -311,33 +320,38 @@ public class Assembler {
     }
 
     boolean pAValue() {
-        if (tok.ttype != tok.TT_NUMBER)
+        if (tok.ttype != tok.TT_NUMBER) {
+            System.out.println("pAValue() returning false at line 324");
             return false;
-
+        }
         war[IP].aValue = (int) tok.nval;
 
         try {
             if (tok.nextToken() != ',') {
-                System.out.println("no comma after aValue");
+                System.out.println(tok.toString() + " " + tok.ttype);
+                System.out.println("pAValue() returning false at line 332");
                 return false;
             }
 
             tok.nextToken();
+            System.out.println(tok.toString() + " " + tok.ttype);
+
         } catch (IOException e) {
             System.out.println(e.toString());
             return false;
         }
-
+        System.out.println("pAValue() returning pBOperand()");
         return pBOperand();
     }
 
 
     boolean pBOperand() {
-        System.out.println("pBOperand() token="+tok.toString());
-        if (tok.ttype != tok.TT_NUMBER)
+        //System.out.println("pBOperand() token="+tok.toString() + " " + tok.ttype);
+        if (tok.ttype != tok.TT_NUMBER) {
+            System.out.println("pBOperand() returning pBValue");
             return pBValue();
+        }
         switch (tok.ttype) {
-
 
             case '#':
                 war[IP].bIndir = marsVM.Memory.IMMEDIATE;
@@ -395,13 +409,15 @@ public class Assembler {
                 war[IP].bTarget = marsVM.Memory.A;
                 break;
 
-            default:
+            default: {
+                System.out.println("pBOperand() defaulting to false");
                 return false;
-
+            }
         }
 
         try {
             tok.nextToken();
+            System.out.println(tok.toString() + " " + tok.ttype);
         } catch (IOException e) {
             System.out.println(e.toString());
             return false;
@@ -411,14 +427,16 @@ public class Assembler {
     }
 
     boolean pBValue() {
-        System.out.println("pBValue() token="+tok.toString());
-        if (tok.ttype != tok.TT_NUMBER)
+        //System.out.println("pBValue() token="+tok.toString() + " " + tok.ttype);
+        if (tok.ttype != tok.TT_NUMBER) {
+            System.out.println("pBValue() returning false at line 430");
             return false;
-
+        }
         war[IP].bValue = (int) tok.nval;
 
         try {
             tok.nextToken();
+            System.out.println(tok.toString() + " " + tok.ttype);
         } catch (IOException e) {
             System.out.println(e.toString());
             return false;

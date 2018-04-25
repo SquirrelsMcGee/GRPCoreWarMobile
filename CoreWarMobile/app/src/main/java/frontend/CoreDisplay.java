@@ -75,7 +75,7 @@ public class CoreDisplay extends Canvas implements StepListener
 		}
 		coreSize = coreS;
 		width = w;
-		height = ((coreSize / (width /3)) +1) *3;
+		height = h;
 		
 		backgroundInt = Color.BLACK;
 
@@ -95,6 +95,8 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		aliveColor = report.warrior().getColor();
 		deathColor = report.warrior().getDColor();
+
+		System.out.println("Alive colour= " + aliveColor);
 
 		paint.setColor(aliveColor);
 
