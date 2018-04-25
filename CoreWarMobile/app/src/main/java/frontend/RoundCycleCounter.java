@@ -23,34 +23,35 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *//*
+ */
 
  
 package frontend;
 
 //import java.awt.*;
-import android.graphics.*;
+//import android.graphics.*;
 
-*/
+
 /**
  * A label displaying the current round and cycle.
- *//*
+ */
 
-public class RoundCycleCounter extends Label implements CycleListener, RoundListener
+public class RoundCycleCounter implements CycleListener, RoundListener
 {
 	protected int cycle, round;
 	private boolean changed;
 	
-	*/
+
 /**
 	 * Creates a new Round/Cycle counter and places it in a container.
-	 * @param frontend.FrontEndManager man - frontend manager to register, as a round and cycle listener, with.
-	 * @param java.awt.Container con - container to place in.
-	 *//*
+	 * //@param frontend.FrontEndManager man - frontend manager to register, as a round and cycle listener, with.
+	 * //@param java.awt.Container con - container to place in.
+	 */
 
-	public RoundCycleCounter(FrontEndManager man, Container con)
+	//public RoundCycleCounter(FrontEndManager man, Container con)
+	public RoundCycleCounter()
 	{
-		super("Round #0000, Cycle #000000", Label.CENTER);
+		/*super("Round #0000, Cycle #000000", Label.CENTER);
 		
 		man.registerCycleListener(this);
 		man.registerRoundListener(this);
@@ -62,13 +63,13 @@ public class RoundCycleCounter extends Label implements CycleListener, RoundList
 		changed = true;
 				
 		return;
+		*/
 	}
-	
-	*/
-/**
+
+	/**
 	 * CycleListener method.
-	 * @param int c - number of cycles completed.
-	 *//*
+	 * //@param int c - number of cycles completed.
+	 */
 
 	public void cycleFinished(int c)
 	{
@@ -76,12 +77,11 @@ public class RoundCycleCounter extends Label implements CycleListener, RoundList
 		changed = true;
 		return;
 	}
-	
-	*/
-/**
+
+	/**
 	 * RoundListener method.
-	 * @param int r - number of rounds completed.
-	 *//*
+	 * //@param int r - number of rounds completed.
+	 */
 
 	public void roundResults(int r)
 	{
@@ -89,23 +89,22 @@ public class RoundCycleCounter extends Label implements CycleListener, RoundList
 		changed = true;
 		return;
 	}
-	
-	*/
-/**
-	 * java.awt.Component method overwridden to display round and cycle number.
-	 * @param java.awt.Graphics g - graphics context to draw to.
-	 *//*
 
-	public void paint(Graphics g)
+	/**
+	 * java.awt.Component method overwridden to display round and cycle number.
+	 * //@param java.awt.Graphics g - graphics context to draw to.
+	 */
+
+	public void paint()
 	{
 		if (changed)
 		{
-			setText("Round #"+ round +", Cycle #"+ cycle);
+			//setText("Round #"+ round +", Cycle #"+ cycle);
 			changed = false;
 		}
 		
-		super.paint(g);		
+		//super.paint(g);
 		return;
 	} 
 }
-*/
+

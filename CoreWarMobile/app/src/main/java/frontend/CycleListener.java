@@ -34,7 +34,7 @@ public interface CycleListener
 {
 	/**
 	 * called after completion of a cycle.
-	 * @param int cycle - number of cycles completed in this round.
+	 * //@param int cycle - number of cycles completed in this round.
 	 */
 	public void cycleFinished(int cycle);
 }

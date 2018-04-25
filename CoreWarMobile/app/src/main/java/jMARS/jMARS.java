@@ -185,7 +185,7 @@ public class jMARS implements Runnable, FrontEndManager {
 
         warriors = new WarriorObj[numWarriors];
 
-        String filenames[] = {"imp.red","imp2.red"};
+        String filenames[] = {"dwarf.red","imp2.red"};
 
         InputStream iS;
 
@@ -202,21 +202,18 @@ public class jMARS implements Runnable, FrontEndManager {
                 warriors[i] = new WarriorObj(inputStream, maxWarriorLength, aColor, dColor);
                 warriors[i].initPSpace(pSpaceSize);
                 warriors[i].setPCell(0, -1);
+
+                System.out.println("Warrior ["+i+"] name = " + warriors[i].getName());
             } catch (Exception e)
             {
-                //System.out.println("Could not find warrior file " + args[i]);
-                System.out.print("\n\n\nFUCK FUCK FUCK it didn't work i=" + i + "\n\n\n");
                 e.printStackTrace();
-                //System.exit(0);
             }
         }
 
-        System.out.println("Warrior [0] author = " + warriors[0].getAuthor());
+
         warriors[0].Alive = true;
         warriors[1].Alive = true;
 
-
-        //coreDisplay = new CoreDisplay(activity,this, surfaceView, coreSize, 100, 100);
         coreDisplay = activity.coreDisplay;
 
         //roundCycleCounter = new RoundCycleCounter(this, this);
@@ -239,9 +236,10 @@ public class jMARS implements Runnable, FrontEndManager {
 
     }
     public void startThread() {
-        myThread = new Thread(this);
 
-        myThread.run();
+        myThread = new Thread(this);
+        myThread.start();
+
     }
 
     public static String getStringFromFile (File file) throws Exception {
