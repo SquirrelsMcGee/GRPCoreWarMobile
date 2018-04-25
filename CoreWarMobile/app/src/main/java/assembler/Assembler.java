@@ -10,7 +10,7 @@ public class Assembler {
     protected StreamTokenizer tok;
     protected int IP;
     protected int maxLength;
-    protected marsVM.Memory war[];
+    protected Memory war[];
     protected int start;
 
     // meta values
@@ -70,9 +70,9 @@ public class Assembler {
             begin:
             while (tok.nextToken() != StreamTokenizer.TT_EOF) {
                 System.out.println(tok.toString() + " " + tok.ttype);
-                if (tok.ttype == ';')
+                if (tok.ttype == ';') {
                     pComment();
-                else if (tok.ttype == StreamTokenizer.TT_WORD && tok.sval.equals("org")) {
+                } else if (tok.ttype == StreamTokenizer.TT_WORD && tok.sval.equals("org")) {
                     if (tok.nextToken() != tok.TT_NUMBER) {
                         System.out.println("It's a number="+tok.toString() + " " + tok.ttype);
                         return false;
@@ -83,9 +83,9 @@ public class Assembler {
                     tok.nextToken();
                     System.out.println(tok.toString() + " " + tok.ttype);
 
-                    if (tok.ttype == ';')
+                    if (tok.ttype == ';') {
                         pComment();
-
+                    }
                 } else if (tok.ttype == StreamTokenizer.TT_WORD) {
                     //System.out.println("ttype == TT_WORD");
                     if (tok.sval.equals("mov"))
@@ -347,11 +347,13 @@ public class Assembler {
 
     boolean pBOperand() {
         //System.out.println("pBOperand() token="+tok.toString() + " " + tok.ttype);
-        if (tok.ttype != tok.TT_NUMBER) {
+        /*if (tok.ttype != tok.TT_NUMBER) {
             System.out.println("pBOperand() returning pBValue");
             return pBValue();
-        }
+        }*/
         switch (tok.ttype) {
+            case StreamTokenizer.TT_NUMBER:
+                return pBValue();
 
             case '#':
                 war[IP].bIndir = marsVM.Memory.IMMEDIATE;

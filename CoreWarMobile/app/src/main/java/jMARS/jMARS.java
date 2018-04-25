@@ -196,6 +196,7 @@ public class jMARS implements Runnable, FrontEndManager {
             try
             {
                 InputStream inputStream = activity.getAssets().open(filenames[i]);
+
                 Integer aColor = wColors[i % numDefinedColors][0];
                 Integer dColor = wColors[i % numDefinedColors][1];
                 System.out.println("Warrior [" + i + "] colours are:" + aColor + " " + dColor );
