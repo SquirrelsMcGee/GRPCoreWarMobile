@@ -299,6 +299,7 @@ public class jMARS implements Runnable, FrontEndManager {
                     if (cycleNum < cycles) {
                         System.out.println("Cycle #"+cycleNum);
                         cycleNum++;
+                        handler.postDelayed(this, 10);
 
                     } else {
 
