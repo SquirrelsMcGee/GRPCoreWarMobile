@@ -96,11 +96,15 @@ public class CoreDisplay extends Canvas implements StepListener
 		aliveColor = report.warrior().getColor();
 		deathColor = report.warrior().getDColor();
 
-		System.out.println("Alive colour= " + aliveColor);
+		//System.out.println("Alive colour= " + aliveColor);
 
 		paint.setColor(aliveColor);
 
-		
+		//activity.coreDisplay
+
+
+		activity.coreCanvas = activity.surfaceHolder.lockCanvas();
+
 		addr = report.addrRead();
 		for (i=0; i < addr.length; i++)
 		{
@@ -146,7 +150,13 @@ public class CoreDisplay extends Canvas implements StepListener
 			activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
 			activity.bufferCanvas.drawLine(x, y+1, x+1, y+1, paint);
 		}
-		
+
+		if (activity != null && activity.coreCanvas != null) activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
+		try {
+			activity.surfaceHolder.unlockCanvasAndPost(activity.coreCanvas);
+		} catch (Exception e) {
+			System.out.println("Already released");
+		}
 		return;
 	}
 	
@@ -160,7 +170,17 @@ public class CoreDisplay extends Canvas implements StepListener
 		
 		//buffer.setColor(background);
 		paint.setColor(backgroundInt);
+
+		activity.coreCanvas = activity.surfaceHolder.lockCanvas();
+
 		activity.bufferCanvas.drawRect(0, 0, width, height, paint);
+
+		if (activity != null && activity.coreCanvas != null) activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
+		try {
+			activity.surfaceHolder.unlockCanvasAndPost(activity.coreCanvas);
+		} catch (Exception e) {
+			System.out.println("Already released");
+		}
 	}
 
 	/**

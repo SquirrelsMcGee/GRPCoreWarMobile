@@ -52,9 +52,9 @@ public class GameActivity extends AppCompatActivity {
 
     int count;
     int id;
-    Paint paint = new Paint();
-    Rect rectangle;
-    Matrix identityMatrix;
+    public Paint paint = new Paint();
+    public Rect rectangle;
+    public Matrix identityMatrix;
 
     int canvasWidth, canvasHeight;
     public CoreDisplay coreDisplay;
@@ -101,12 +101,12 @@ public class GameActivity extends AppCompatActivity {
             }
         };
 
-        jmars = new jMARS(this);
-
-
+        jmars = new jMARS(gameActivity);
 
         surface.getHolder().addCallback(new SurfaceHolder.Callback() {
             public void surfaceCreated(SurfaceHolder holder) {
+                if (!jmars.Active) jmars = new jMARS(gameActivity);
+
                 jmars.application_init();
 
                 surfaceHolder = holder;
@@ -152,6 +152,7 @@ public class GameActivity extends AppCompatActivity {
             }
 
             public void surfaceDestroyed(SurfaceHolder holder) {
+                surface.getHolder().removeCallback(this);
                 handler.removeCallbacks(loop);
                 jmars.screenClose();
             }
