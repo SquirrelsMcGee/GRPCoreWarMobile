@@ -37,7 +37,7 @@ public class BarrackActivity extends AppCompatActivity {
         File[] files = f.listFiles();
         fileList.clear();
         for (File file : files) {
-            fileList.add(file.getPath());
+            fileList.add(file.getName());
         }
         //ArrayAdapter<String> directoryList = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, fileList);
         //setListAdapter(directoryList);
