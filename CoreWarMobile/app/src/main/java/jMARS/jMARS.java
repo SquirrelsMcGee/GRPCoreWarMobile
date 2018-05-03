@@ -269,6 +269,8 @@ public class jMARS implements Runnable, FrontEndManager {
         roundNum = 0;
         rounds = 1;
 
+        final int delayMillis = 100;
+
         for (; roundNum < rounds; roundNum++)
         {
             System.out.println("Round #"+roundNum);
@@ -279,7 +281,6 @@ public class jMARS implements Runnable, FrontEndManager {
                 public void run() {
 
                     for (; warRun < runWarriors; warRun++) {
-                        //System.out.println("warRun=" + warRun);
 
                         StepReport stats = MARS.executeInstr();
 
@@ -293,13 +294,18 @@ public class jMARS implements Runnable, FrontEndManager {
                             war.Alive = false;
                             runWarriors--;
                         }
+
                         notifyStepListeners(stats);
                     }
 
                     if (cycleNum < cycles) {
                         System.out.println("Cycle #"+cycleNum);
+
+                        notifyCycleListeners(cycleNum);
+
                         cycleNum++;
-                        handler.postDelayed(this, 10);
+
+                        handler.postDelayed(this, delayMillis);
 
                     } else {
 
@@ -311,15 +317,15 @@ public class jMARS implements Runnable, FrontEndManager {
                         MARS.reset();
                         loadWarriors();
                         runWarriors = numWarriors;
-                        activity.coreDisplay.clear();
+                        //activity.coreDisplay.clear();
 
                         cycleNum = 0;
                     }
                 }
             };
-            handler.postDelayed(loop, 10);
+            handler.postDelayed(loop, delayMillis);
 
-            if (false == true) // remember to delete
+            /*
             for (; cycleNum < cycles; cycleNum++) {
                 for (; warRun < runWarriors; warRun++) {
                     //System.out.println("warRun=" + warRun);
@@ -346,8 +352,8 @@ public class jMARS implements Runnable, FrontEndManager {
 
                 warRun = 0;
 
-            }
-
+            }*/
+            /*
             endTime = new Date();
             totalTime = ((double) endTime.getTime() - (double) startTime.getTime()) / 1000;
             System.out.println("Total time="+ totalTime +" Cycles="+ cycleNum +" avg. time/cycle="+ (totalTime/cycleNum));
@@ -359,6 +365,7 @@ public class jMARS implements Runnable, FrontEndManager {
             activity.coreDisplay.clear();
 
             cycleNum = 0;
+            */
         }
     }
 

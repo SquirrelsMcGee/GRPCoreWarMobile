@@ -150,8 +150,13 @@ public class CoreDisplay extends Canvas implements StepListener
 			activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
 			activity.bufferCanvas.drawLine(x, y+1, x+1, y+1, paint);
 		}
+		if (activity == null) System.out.println("Activity is null");
+		if (activity.coreCanvas == null) System.out.println("Activity.coreCanvas is null");
+		if (activity != null && activity.coreCanvas != null) {
+			System.out.println("Updated wowie");
+			activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
+		}
 
-		if (activity != null && activity.coreCanvas != null) activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
 		try {
 			activity.surfaceHolder.unlockCanvasAndPost(activity.coreCanvas);
 		} catch (Exception e) {

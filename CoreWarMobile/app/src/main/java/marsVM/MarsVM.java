@@ -113,6 +113,10 @@ public class MarsVM
 	 */
 	public StepReport executeInstr()
 	{
+		if (currentW == null) {
+			System.out.println("Dead rip");
+			return null;
+		}
 		Memory instr = new Memory();	// copy of current instruction
 		int tempAddr;		// temporary address for use in mode evaluation
 		int addrA = 0;			// A's address
