@@ -45,7 +45,7 @@ public class GameActivity extends AppCompatActivity {
     public Canvas coreCanvas;
     public Canvas bufferCanvas;
     public Rect canvasDimensions;
-
+    static public String WarriorName = "Warrior 1";
     public Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
     public Bitmap bmp;
 
@@ -66,7 +66,8 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         GameActivity.context = getApplicationContext();
         setContentView(R.layout.activity_game);
-
+        
+        TextChanger(WarriorName);
         surface = (SurfaceView) findViewById(R.id.CoreSurface);
         progress = (TextView) findViewById(R.id.progressLabel);
         identityMatrix = new Matrix();
@@ -178,5 +179,8 @@ public class GameActivity extends AppCompatActivity {
         jmars.startThread();
         //jmars.run();
     }
-
+    public void TextChanger(String WarriorName) {
+        TextView WarriorOne = (TextView)findViewById(R.id.warriorOneLabel);
+        WarriorOne.setText(WarriorName);
+    }
 }
