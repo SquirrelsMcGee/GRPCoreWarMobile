@@ -70,6 +70,7 @@ public class CoreDisplay extends Canvas implements StepListener
 	public CoreDisplay(GameActivity superActivity, FrontEndManager man, SurfaceView surface, int coreS, int w, int h)
 	{
 		activity = superActivity;
+
 		if (activity == null) {
 			System.out.println("Failed to get activity");
 		}
@@ -77,7 +78,7 @@ public class CoreDisplay extends Canvas implements StepListener
 		width = w;
 		height = h;
 		
-		backgroundInt = Color.BLACK;
+		backgroundInt = Color.WHITE;
 
 		man.registerStepListener(this);
 	}
@@ -90,22 +91,22 @@ public class CoreDisplay extends Canvas implements StepListener
 	public void stepProcess(StepReport report)
 	{
 		int i;
-		int x,y;
+		int x = 0, y = 0;
 		int addr[];
 
 		aliveColor = report.warrior().getColor();
 		deathColor = report.warrior().getDColor();
 
-		//System.out.println("Alive colour= " + aliveColor);
+		System.out.printf("[Step Report] Alive colour=%d  Death Color=%d \n ",aliveColor, deathColor);
 
 		paint.setColor(aliveColor);
+		paint.setStrokeWidth(10);
 
 		//activity.coreDisplay
 
-
-		activity.coreCanvas = activity.surfaceHolder.lockCanvas();
-
 		addr = report.addrRead();
+		//System.out.printf("[Step Process] [addrRead] Address Length: %d", addr.length);
+
 		for (i=0; i < addr.length; i++)
 		{
 			y = (addr[i] / (width /3)) * 3;
@@ -115,6 +116,8 @@ public class CoreDisplay extends Canvas implements StepListener
 		}
 		
 		addr = report.addrWrite();
+		//System.out.printf("[Step Process] [addrWrite] Address Length: %d", addr.length);
+
 		for (i=0; i < addr.length; i++)
 		{
 			y = (addr[i] / (width /3)) * 3;
@@ -124,6 +127,8 @@ public class CoreDisplay extends Canvas implements StepListener
 		}
 
 		addr = report.addrDec();
+		//System.out.printf("[Step Process] [addrDec] Address Length: %d", addr.length);
+
 		for (i=0; i < addr.length; i++)
 		{
 			y = (addr[i] / (width /3)) * 3;
@@ -133,6 +138,8 @@ public class CoreDisplay extends Canvas implements StepListener
 		}
 		
 		addr = report.addrInc();
+		//System.out.printf("[Step Process] [addrInc] Address Length: %d", addr.length);
+
 		for (i=0; i < addr.length; i++)
 		{
 			y = (addr[i] / (width /3)) * 3;
@@ -140,7 +147,11 @@ public class CoreDisplay extends Canvas implements StepListener
 
 			activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
 		}
-		
+
+		System.out.printf("[Step Process] x=%d y=%d\n", x, y);
+
+
+
 		if ((i = report.addrExec()) != -1)
 		{
 			y = (i / (width /3)) * 3;
@@ -150,18 +161,27 @@ public class CoreDisplay extends Canvas implements StepListener
 			activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
 			activity.bufferCanvas.drawLine(x, y+1, x+1, y+1, paint);
 		}
-		if (activity == null) System.out.println("Activity is null");
-		if (activity.coreCanvas == null) System.out.println("Activity.coreCanvas is null");
+		if (activity == null) System.out.println("Error: Activity is null");
+		if (activity.coreCanvas == null) System.out.println("Error: Activity.coreCanvas is null");
+
+		paint.setColor(aliveColor);
+
+
+		activity.bufferCanvas.drawRect(x, y, x+10, y+10, paint);
+
+		activity.coreCanvas = activity.surfaceHolder.lockCanvas();
+
 		if (activity != null && activity.coreCanvas != null) {
-			System.out.println("Updated wowie");
 			activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
+			System.out.println("[Graphics Update] Updated Canvas");
 		}
 
 		try {
 			activity.surfaceHolder.unlockCanvasAndPost(activity.coreCanvas);
 		} catch (Exception e) {
-			System.out.println("Already released");
+			System.out.println("Error: Canvas Already unlocked");
 		}
+
 		return;
 	}
 	
@@ -180,7 +200,9 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		activity.bufferCanvas.drawRect(0, 0, width, height, paint);
 
-		if (activity != null && activity.coreCanvas != null) activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
+		if (activity != null && activity.coreCanvas != null)
+			activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
+
 		try {
 			activity.surfaceHolder.unlockCanvasAndPost(activity.coreCanvas);
 		} catch (Exception e) {

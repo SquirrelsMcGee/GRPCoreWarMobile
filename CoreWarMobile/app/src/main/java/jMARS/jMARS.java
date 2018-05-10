@@ -25,17 +25,18 @@ public class jMARS implements Runnable, FrontEndManager {
 
     // constants
     static final int numDefinedColors = 4;
-    /*static final int wColors[][] = {
+    static final int wColors[][] = {
             {Color.GREEN, Color.YELLOW},
             {Color.RED, Color.MAGENTA},
             {Color.CYAN, Color.BLUE},
-            {Color.GRAY, Color.DKGRAY}};*/
+            {Color.GRAY, Color.DKGRAY}};
+    /*
     static final int wColors[][] = {
             {0x00FF00, 0xFFFF00},
             {0xFF0000, 0xFF00FF},
             {0x00FFFF, 0x0000FF},
             {0x808080, 0x696969},
-    };
+    };*/
 
     public boolean Active = false;
 
@@ -67,6 +68,7 @@ public class jMARS implements Runnable, FrontEndManager {
     int runWarriors;
 
     static Thread myThread;
+    Handler handler;
 
     Vector<StepListener> stepListeners;
     Vector<CycleListener> cycleListeners;
@@ -75,6 +77,7 @@ public class jMARS implements Runnable, FrontEndManager {
     Date startTime;
     Date endTime;
     double totalTime;
+    boolean roundOver = false;
 
     // To write to the screen we use
     // SurfaceView surface
@@ -86,6 +89,8 @@ public class jMARS implements Runnable, FrontEndManager {
 
     Context context;
     GameActivity activity;
+
+
 
     public SurfaceHolder surfaceHolder;
     public SurfaceView surfaceView;
@@ -137,7 +142,7 @@ public class jMARS implements Runnable, FrontEndManager {
         minWarriorDistance = 100;
         maxProc = 8000;
         coreSize = 8000;
-        cycles = 100;
+        cycles = 8000;
         rounds = 1;
         numWarriors = 2;
 
@@ -200,7 +205,7 @@ public class jMARS implements Runnable, FrontEndManager {
 
                 Integer aColor = wColors[i % numDefinedColors][0];
                 Integer dColor = wColors[i % numDefinedColors][1];
-                //System.out.println("Warrior [" + i + "] colours are:" + aColor + " " + dColor );
+
                 warriors[i] = new WarriorObj(inputStream, maxWarriorLength, aColor, dColor);
                 warriors[i].initPSpace(pSpaceSize);
                 warriors[i].setPCell(0, -1);
@@ -269,45 +274,59 @@ public class jMARS implements Runnable, FrontEndManager {
         roundNum = 0;
         rounds = 1;
 
-        final int delayMillis = 100;
+        activity.coreDisplay.clear();
+
+
+        final int delayMillis = 10;
 
         for (; roundNum < rounds; roundNum++)
         {
-            System.out.println("Round #"+roundNum);
+            roundOver = false;
 
-            final Handler handler = new Handler(Looper.getMainLooper());
-            final Runnable loop = new Runnable() {
+            //System.out.println("Round #"+roundNum);
+
+            handler = new Handler(Looper.getMainLooper());
+
+            final Runnable cycleLoop = new Runnable() {
                 @Override
                 public void run() {
+                    if (cycleNum < cycles && roundOver == false) {
+                        for (; warRun < runWarriors; warRun++) {
 
-                    for (; warRun < runWarriors; warRun++) {
+                            StepReport stats = MARS.executeInstr();
 
-                        StepReport stats = MARS.executeInstr();
+                            WarriorObj war = stats.warrior();
 
-                        WarriorObj war = stats.warrior();
+                            war.numProc = stats.numProc();
 
-                        war.numProc = stats.numProc();
+                            if (stats.wDeath()) {
+                                war.Alive = false;
+                                runWarriors--;
+                            }
 
-                        if (stats.wDeath())
-                        {
-                            //System.out.println("Warrior["+warRun+"] died");
-                            war.Alive = false;
-                            runWarriors--;
+                            System.out.printf("[Process Update] Round #%d Cycle #%d Warrior #%d\n", roundNum, cycleNum, warRun);
+
+
+                            notifyStepListeners(stats);
+
+
                         }
-
-                        notifyStepListeners(stats);
-                    }
-
-                    if (cycleNum < cycles) {
-                        System.out.println("Cycle #"+cycleNum);
 
                         notifyCycleListeners(cycleNum);
 
-                        cycleNum++;
+                        warRun = 0;
 
+                        if (runWarriors <= minWarriors) {
+                            roundOver = true;
+                        }
+
+                        cycleNum++;
                         handler.postDelayed(this, delayMillis);
+                        //}
 
                     } else {
+
+                        //notifyRoundListeners(roundNum);
 
                         endTime = new Date();
                         totalTime = ((double) endTime.getTime() - (double) startTime.getTime()) / 1000;
@@ -323,49 +342,8 @@ public class jMARS implements Runnable, FrontEndManager {
                     }
                 }
             };
-            handler.postDelayed(loop, delayMillis);
 
-            /*
-            for (; cycleNum < cycles; cycleNum++) {
-                for (; warRun < runWarriors; warRun++) {
-                    //System.out.println("warRun=" + warRun);
-
-                    StepReport stats = MARS.executeInstr();
-
-                    WarriorObj war = stats.warrior();
-
-                    war.numProc = stats.numProc();
-
-                    if (stats.wDeath())
-                    {
-                        //System.out.println("Warrior["+warRun+"] died");
-                        war.Alive = false;
-                        runWarriors--;
-                    }
-                    notifyStepListeners(stats);
-                }
-
-                notifyCycleListeners(cycleNum);
-
-                if (runWarriors <= minWarriors)
-                    break;
-
-                warRun = 0;
-
-            }*/
-            /*
-            endTime = new Date();
-            totalTime = ((double) endTime.getTime() - (double) startTime.getTime()) / 1000;
-            System.out.println("Total time="+ totalTime +" Cycles="+ cycleNum +" avg. time/cycle="+ (totalTime/cycleNum));
-            startTime = new Date();
-
-            MARS.reset();
-            loadWarriors();
-            runWarriors = numWarriors;
-            activity.coreDisplay.clear();
-
-            cycleNum = 0;
-            */
+            handler.postDelayed(cycleLoop, delayMillis);
         }
     }
 
@@ -440,6 +418,7 @@ public class jMARS implements Runnable, FrontEndManager {
     public void screenClose() {
         Active = false;
         myThread.interrupt();
+        handler.removeCallbacksAndMessages(null);
 
     }
 
