@@ -211,11 +211,16 @@ public class jMARS implements Runnable, FrontEndManager {
                 warriors[i].setPCell(0, -1);
 
                 System.out.println("Warrior ["+i+"] name = " + warriors[i].getName());
+
             } catch (Exception e)
             {
                 e.printStackTrace();
             }
         }
+
+        activity.WarriorName = warriors[0].getName();
+        activity.WarriorName2 = warriors[1].getName();
+        activity.TextChanger(activity.WarriorName, activity.WarriorName2);
 
 
         warriors[0].Alive = true;

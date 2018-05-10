@@ -48,8 +48,8 @@ public class CoreDisplay extends Canvas implements StepListener
 
 	protected int width;
 	protected int height;
-	float smallWidth, smallHeight;
-	float numberAcross, size, sizeX, sizeY;
+	int smallWidth, smallHeight;
+	int numberAcross, size, sizeX, sizeY;
 
 	
 	//protected Image offScreen;
@@ -86,14 +86,15 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		numberAcross = 100;
 
-		//sizeX = width/100;
-		//sizeY = height/80;
-		sizeX = sizeY = 10;
+		sizeX = width/100;
+		sizeY = height/80;
+		//sizeX = sizeY = 10;
 
-		//smallWidth = width/sizeX;
-		//smallHeight = height/sizeY;
-		smallWidth = width;
-		smallHeight = height;
+
+		smallWidth = width/sizeX;
+		smallHeight = height/sizeY;
+		//smallWidth = width;
+		//smallHeight = height;
 
 
 		//rectSize = 100;
@@ -111,7 +112,7 @@ public class CoreDisplay extends Canvas implements StepListener
 	public void stepProcess(StepReport report)
 	{
 		int i;
-		float x = 0, y = 0;
+		int x = 0, y = 0;
 		int posX = 0, posY = 0;
 
 		int addr[];
@@ -129,11 +130,17 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		for (i=0; i < addr.length; i++)
 		{
-			y = (addr[i] / (smallHeight / 3)) * 3;
-			x = (addr[i] % (smallWidth / 3)) * 3;
+			//y = (addr[i] / (smallHeight / 3)) * 3;
+			//x = (addr[i] % (smallWidth / 3)) * 3;
+
+			x = addr[i] % (smallWidth);
+			y = addr[i] / (smallHeight);
 
 			posX = (int) x;
 			posY = (int) y;
+
+			posX *= sizeX;
+			posY *= sizeY;
 
 			//posX = (int) (x * sizeX);
 			//posY = (int) (y * sizeY);
@@ -160,11 +167,17 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		for (i=0; i < addr.length; i++)
 		{
-			y = (addr[i] / (smallHeight /3)) * 3;
-			x = (addr[i] % (smallWidth /3)) * 3;
+			//y = (addr[i] / (smallHeight /3)) * 3;
+			//x = (addr[i] % (smallWidth /3)) * 3;
+
+			x = addr[i] % (smallWidth);
+			y = addr[i] / (smallHeight);
 
 			posX = (int) x;
 			posY = (int) y;
+
+			posX *= sizeX;
+			posY *= sizeY;
 
 			//posX = (int) (x * sizeX);
 			//posY = (int) (y * sizeY);
@@ -192,11 +205,17 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		for (i=0; i < addr.length; i++)
 		{
-			y = (addr[i] / (smallHeight /3)) * 3;
-			x = (addr[i] % (smallWidth /3)) * 3;
+			//y = (addr[i] / (smallHeight /3)) * 3;
+			//x = (addr[i] % (smallWidth /3)) * 3;
+
+			x = addr[i] % (smallWidth);
+			y = addr[i] / (smallHeight);
 
 			posX = (int) x;
 			posY = (int) y;
+
+			posX *= sizeX;
+			posY *= sizeY;
 
 			//posX = (int) (x * sizeX);
 			//posY = (int) (y * sizeY);
@@ -225,8 +244,10 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		for (i=0; i < addr.length; i++)
 		{
-			y = (addr[i] / (smallHeight /3)) * 3;
-			x = (addr[i] % (smallWidth /3)) * 3;
+			//y = (addr[i] / (smallHeight /3)) * 3;
+			//x = (addr[i] % (smallWidth /3)) * 3;
+			x = addr[i] % (smallWidth);
+			y = addr[i] / (smallHeight);
 
 			posX = (int) x;
 			posY = (int) y;
@@ -257,8 +278,11 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		if ((i = report.addrExec()) != -1)
 		{
-			y = (i / (smallHeight /3)) * 3;
-			x = (i % (smallWidth /3)) * 3;
+			//y = (i / (smallHeight /3)) * 3;
+			//x = (i % (smallWidth /3)) * 3;
+
+			//x = addr[i] % (smallWidth);
+			//y = addr[i] / (smallHeight);
 
 			y *= size;
 			x *= size;
