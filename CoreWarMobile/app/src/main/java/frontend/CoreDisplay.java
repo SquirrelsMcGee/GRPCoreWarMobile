@@ -48,8 +48,8 @@ public class CoreDisplay extends Canvas implements StepListener
 
 	protected int width;
 	protected int height;
-	int smallWidth, smallHeight;
-	int size;
+	float smallWidth, smallHeight;
+	float numberAcross, size, sizeX, sizeY;
 
 	
 	//protected Image offScreen;
@@ -78,13 +78,22 @@ public class CoreDisplay extends Canvas implements StepListener
 			System.out.println("Failed to get activity");
 		}
 		coreSize = coreS;
+
 		width = w;
 		height = h;
 
-		size = 1;
+		System.out.printf("Width=%d, Height=%d\n", width, height);
 
-		smallWidth = width/size;
-		smallHeight = height/size;
+		numberAcross = 100;
+
+		//sizeX = width/100;
+		//sizeY = height/80;
+		sizeX = sizeY = 10;
+
+		//smallWidth = width/sizeX;
+		//smallHeight = height/sizeY;
+		smallWidth = width;
+		smallHeight = height;
 
 
 		//rectSize = 100;
@@ -102,7 +111,7 @@ public class CoreDisplay extends Canvas implements StepListener
 	public void stepProcess(StepReport report)
 	{
 		int i;
-		int x = 0, y = 0;
+		float x = 0, y = 0;
 		int posX = 0, posY = 0;
 
 		int addr[];
@@ -116,17 +125,25 @@ public class CoreDisplay extends Canvas implements StepListener
 		paint.setStrokeWidth(10);
 
 		addr = report.addrRead();
+		System.out.printf("Address=%d\n", addr[0]);
 
 		for (i=0; i < addr.length; i++)
 		{
-			y = (addr[i] / (smallHeight /3)) * 3;
-			x = (addr[i] % (smallWidth /3)) * 3;
-			posX = x;
-			posY = y;
-			/*
-			posX = x * size;
-			posY = y * size;
+			y = (addr[i] / (smallHeight / 3)) * 3;
+			x = (addr[i] % (smallWidth / 3)) * 3;
 
+			posX = (int) x;
+			posY = (int) y;
+
+			//posX = (int) (x * sizeX);
+			//posY = (int) (y * sizeY);
+
+			//posX = (int) lerp(x, numberAcross, 0);
+			//posY = (int) lerp(y, coreSize/numberAcross, 0);
+
+			//posX *= numberAcross;
+
+			/*
 			if (posX > width) {
 				posX = 0; posY += size;
 			}
@@ -135,21 +152,27 @@ public class CoreDisplay extends Canvas implements StepListener
 			}
 			*/
 
-			activity.bufferCanvas.drawRect(posX, posY, posX+size, posY+size, paint);
+			activity.bufferCanvas.drawRect(posX, posY, posX+sizeX, posY+sizeY, paint);
 		}
 
 		addr = report.addrWrite();
+		//System.out.printf("Address Length=%d\n", addr.length);
 
 		for (i=0; i < addr.length; i++)
 		{
 			y = (addr[i] / (smallHeight /3)) * 3;
 			x = (addr[i] % (smallWidth /3)) * 3;
-			posX = x;
-			posY = y;
-			/*
-			posX = x * size;
-			posY = y * size;
 
+			posX = (int) x;
+			posY = (int) y;
+
+			//posX = (int) (x * sizeX);
+			//posY = (int) (y * sizeY);
+
+			//posX = (int) lerp(x, numberAcross, 0);
+			//posY = (int) lerp(y, coreSize/numberAcross, 0);
+
+			/*
 			if (posX > width) {
 				posX = 0; posY += size;
 			}
@@ -160,7 +183,7 @@ public class CoreDisplay extends Canvas implements StepListener
 			//activity.bufferCanvas.drawLine(x+1, y, x, y+1, paint);
 			//activity.bufferCanvas.drawRect(x+1, y, x, y+1, paint);
 
-			activity.bufferCanvas.drawRect(posX, posY, posX+size, posY+size, paint);
+			activity.bufferCanvas.drawRect(posX, posY, posX+sizeX, posY+sizeY, paint);
 		}
 
 
@@ -171,11 +194,17 @@ public class CoreDisplay extends Canvas implements StepListener
 		{
 			y = (addr[i] / (smallHeight /3)) * 3;
 			x = (addr[i] % (smallWidth /3)) * 3;
-			posX = x;
-			posY = y;
+
+			posX = (int) x;
+			posY = (int) y;
+
+			//posX = (int) (x * sizeX);
+			//posY = (int) (y * sizeY);
+
+			//posX = (int) lerp(x, numberAcross, 0);
+			//posY = (int) lerp(y, coreSize/numberAcross, 0);
+
 			/*
-			posX = x * size;
-			posY = y * size;
 
 			if (posX > width) {
 				posX = 0; posY += size;
@@ -187,7 +216,7 @@ public class CoreDisplay extends Canvas implements StepListener
 			*/
 			//activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
 			//activity.bufferCanvas.drawRect(x, y, x+1, y, paint);
-			activity.bufferCanvas.drawRect(posX, posY, posX+size, posY+size, paint);
+			activity.bufferCanvas.drawRect(posX, posY, posX+sizeX, posY+sizeY, paint);
 		}
 
 		
@@ -199,13 +228,17 @@ public class CoreDisplay extends Canvas implements StepListener
 			y = (addr[i] / (smallHeight /3)) * 3;
 			x = (addr[i] % (smallWidth /3)) * 3;
 
-			posX = x;
-			posY = y;
+			posX = (int) x;
+			posY = (int) y;
+
+			//posX = (int) (x * sizeX);
+			//posY = (int) (y * sizeY);
+
+			//posX = (int) lerp(x, numberAcross, 0);
+			//posY = (int) lerp(y, coreSize/numberAcross, 0);
+
 
 			/*
-			posX = x * size;
-			posY = y * size;
-
 			if (posX > width) {
 				posX = 0; posY += size;
 			}
@@ -215,10 +248,10 @@ public class CoreDisplay extends Canvas implements StepListener
 			*/
 			//activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
 			//activity.bufferCanvas.drawRect(x, y, x+1, y, paint);
-			activity.bufferCanvas.drawRect(posX, posY, posX+size, posY+size, paint);
+			activity.bufferCanvas.drawRect(posX, posY, posX+sizeX, posY+sizeY, paint);
 		}
 
-		System.out.printf("[Step Process] x=%d y=%d\n", posX, posY);
+		//System.out.printf("[Step Process] x=%d y=%d\n", posX, posY);
 
 
 
@@ -234,8 +267,8 @@ public class CoreDisplay extends Canvas implements StepListener
 			//x = rectSize + (addr[i] % (width /3)) * 3;
 			
 			if (report.pDeath()) paint.setColor(deathColor);
-			activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
-			activity.bufferCanvas.drawLine(x, y+1, x+1, y+1, paint);
+			//activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
+			//activity.bufferCanvas.drawLine(x, y+1, x+1, y+1, paint);
 		}
 		if (activity == null) System.out.println("Error: Activity is null");
 		if (activity.coreCanvas == null) System.out.println("Error: Activity.coreCanvas is null");

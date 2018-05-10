@@ -141,7 +141,7 @@ public class jMARS implements Runnable, FrontEndManager {
         maxWarriorLength = 100;
         minWarriorDistance = 100;
         maxProc = 8000;
-        coreSize = 8000;
+        coreSize = 1000;
         cycles = 8000;
         rounds = 1;
         numWarriors = 2;
