@@ -135,6 +135,8 @@ public class GameActivity extends AppCompatActivity {
                 //surfaceHolder.unlockCanvasAndPost(coreCanvas);
 
                 coreCanvas = surfaceHolder.lockCanvas();
+                paint.setColor(Color.BLACK);
+                bufferCanvas.drawRect(0,0,canvasWidth,canvasHeight, paint);
 
                 for (int i = 0; i < 1000; i+=100) {
 
@@ -143,7 +145,7 @@ public class GameActivity extends AppCompatActivity {
                     Rect rectangle = new Rect(i, 0, i+100, 100);
                     paint.setColor(color);
 
-                    bufferCanvas.drawRect(rectangle, paint);
+                    //bufferCanvas.drawRect(rectangle, paint);
 
                 }
                 coreCanvas.drawBitmap(bmp, identityMatrix, null);

@@ -126,7 +126,7 @@ public class jMARS implements Runnable, FrontEndManager {
             Rect rectangle = new Rect(i, 500, i+100, 600);
             paint.setColor(color);
 
-            activity.bufferCanvas.drawRect(rectangle, paint);
+            //activity.bufferCanvas.drawRect(rectangle, paint);
         }
 
 
@@ -191,7 +191,7 @@ public class jMARS implements Runnable, FrontEndManager {
 
         warriors = new WarriorObj[numWarriors];
 
-        String filenames[] = {"dwarf.red","imp2.red"};
+        String filenames[] = {"imp2.red","imp2.red"};
 
         InputStream iS;
 
@@ -277,7 +277,7 @@ public class jMARS implements Runnable, FrontEndManager {
         activity.coreDisplay.clear();
 
 
-        final int delayMillis = 10;
+        final int delayMillis = 5;
 
         for (; roundNum < rounds; roundNum++)
         {
