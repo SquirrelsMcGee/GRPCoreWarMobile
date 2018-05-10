@@ -57,7 +57,10 @@ public class BarrackActivity extends AppCompatActivity {
                 // Clicking on items
                 item = ((TextView)v).getText().toString();
                 File newW = new File(item);
-                GameActivity.WarriorName = item;
+                if (GameActivity.WarriorName == "Warrior 1")
+                    GameActivity.WarriorName = item;
+                else if(GameActivity.WarriorName2 == "Warrior 2")
+                    GameActivity.WarriorName2 = item;
                 Toast.makeText(getBaseContext(), item, Toast.LENGTH_SHORT).show();
                 startActivity(PlayS);
                 //GA.TextChanger(item);
