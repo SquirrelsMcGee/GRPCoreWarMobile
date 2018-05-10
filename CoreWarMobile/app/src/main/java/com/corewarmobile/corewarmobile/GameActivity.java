@@ -46,6 +46,7 @@ public class GameActivity extends AppCompatActivity {
     public Canvas bufferCanvas;
     public Rect canvasDimensions;
     static public String WarriorName = "Warrior 1";
+    static public String WarriorName2 = "Warrior 2";
     public Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
     public Bitmap bmp;
 
@@ -67,7 +68,7 @@ public class GameActivity extends AppCompatActivity {
         GameActivity.context = getApplicationContext();
         setContentView(R.layout.activity_game);
         
-        TextChanger(WarriorName);
+        TextChanger(WarriorName, WarriorName2);
         surface = (SurfaceView) findViewById(R.id.CoreSurface);
         progress = (TextView) findViewById(R.id.progressLabel);
         identityMatrix = new Matrix();
@@ -171,6 +172,10 @@ public class GameActivity extends AppCompatActivity {
         startActivity(NewW);
     }
     public void Add(View view){
+        if(WarriorName != "Warrior 1" && WarriorName2 != "Warrior 2") {
+            WarriorName = "Warrior 1";
+            WarriorName2 = "Warrior 2";
+        }
         Intent Barracks = new Intent(this, BarrackActivity.class);
         startActivity(Barracks);
     }
@@ -179,8 +184,10 @@ public class GameActivity extends AppCompatActivity {
         jmars.startThread();
         //jmars.run();
     }
-    public void TextChanger(String WarriorName) {
+    public void TextChanger(String WarriorName, String WarriorName2) {
         TextView WarriorOne = (TextView)findViewById(R.id.warriorOneLabel);
+        TextView WarriorTwo = (TextView)findViewById(R.id.warriorTwoLabel);
         WarriorOne.setText(WarriorName);
+        WarriorTwo.setText(WarriorName2);
     }
 }
