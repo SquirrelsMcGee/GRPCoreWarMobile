@@ -1,6 +1,6 @@
 ;name Imp
 ;author A.K. Dewdney
 
-mov.i 0,1
+mov.i 1,2
 
 

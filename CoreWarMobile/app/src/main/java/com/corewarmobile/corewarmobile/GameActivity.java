@@ -157,7 +157,7 @@ public class GameActivity extends AppCompatActivity {
 
             public void surfaceDestroyed(SurfaceHolder holder) {
                 surface.getHolder().removeCallback(this);
-                handler.removeCallbacks(loop);
+                //if (handler != null) handler.removeCallbacks(loop);
                 jmars.screenClose();
             }
 

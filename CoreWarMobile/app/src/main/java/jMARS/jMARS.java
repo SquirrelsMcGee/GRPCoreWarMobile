@@ -107,6 +107,7 @@ public class jMARS implements Runnable, FrontEndManager {
         //bufferCanvas = activity.bufferCanvas;
         //context = activity.context;
 
+
         stepListeners = new Vector<>();
         cycleListeners = new Vector<>();
         roundListeners = new Vector<>();
@@ -141,8 +142,8 @@ public class jMARS implements Runnable, FrontEndManager {
         maxWarriorLength = 100;
         minWarriorDistance = 100;
         maxProc = 8000;
-        coreSize = 1000;
-        cycles = 8000;
+        coreSize = 5000;
+        cycles = 1000;
         rounds = 1;
         numWarriors = 2;
 
@@ -191,7 +192,7 @@ public class jMARS implements Runnable, FrontEndManager {
 
         warriors = new WarriorObj[numWarriors];
 
-        String filenames[] = {"imp2.red","imp2.red"};
+        String filenames[] = {"imp.red", "clp.red"};
 
         InputStream iS;
 
@@ -202,6 +203,7 @@ public class jMARS implements Runnable, FrontEndManager {
             try
             {
                 InputStream inputStream = activity.getAssets().open(filenames[i]);
+
 
                 Integer aColor = wColors[i % numDefinedColors][0];
                 Integer dColor = wColors[i % numDefinedColors][1];
@@ -282,7 +284,7 @@ public class jMARS implements Runnable, FrontEndManager {
         activity.coreDisplay.clear();
 
 
-        final int delayMillis = 5;
+        final int delayMillis = 1;
 
         for (; roundNum < rounds; roundNum++)
         {
@@ -309,7 +311,7 @@ public class jMARS implements Runnable, FrontEndManager {
                                 runWarriors--;
                             }
 
-                            System.out.printf("[Process Update] Round #%d Cycle #%d Warrior #%d\n", roundNum, cycleNum, warRun);
+                            //System.out.printf("[Process Update] Round #%d Cycle #%d Warrior #%d\n", roundNum, cycleNum, warRun);
 
 
                             notifyStepListeners(stats);
@@ -336,6 +338,21 @@ public class jMARS implements Runnable, FrontEndManager {
                         endTime = new Date();
                         totalTime = ((double) endTime.getTime() - (double) startTime.getTime()) / 1000;
                         System.out.println("Total time="+ totalTime +" Cycles="+ cycleNum +" avg. time/cycle="+ (totalTime/cycleNum));
+
+                        paint.setColor(Color.WHITE);
+                        paint.setTextSize(40);
+
+                        activity.coreCanvas = activity.surfaceHolder.lockCanvas();
+                        activity.bufferCanvas.drawText("Total time="+ totalTime +" Cycles="+ cycleNum +" avg. time/cycle=" + (totalTime/cycleNum),
+                                 10, -100 + activity.coreCanvas.getHeight()/2, paint);
+
+                        paint.setColor(Color.LTGRAY);
+                        activity.bufferCanvas.drawText("Total time="+ totalTime +" Cycles="+ cycleNum +" avg. time/cycle=" + (totalTime/cycleNum),
+                                12, -98 + activity.coreCanvas.getHeight()/2, paint);
+
+                        activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
+                        activity.surfaceHolder.unlockCanvasAndPost(activity.coreCanvas);
+
                         startTime = new Date();
 
                         MARS.reset();
@@ -422,8 +439,8 @@ public class jMARS implements Runnable, FrontEndManager {
 
     public void screenClose() {
         Active = false;
-        myThread.interrupt();
-        handler.removeCallbacksAndMessages(null);
+        if (myThread != null) myThread.interrupt();
+        if (handler != null) handler.removeCallbacksAndMessages(null);
 
     }
 
