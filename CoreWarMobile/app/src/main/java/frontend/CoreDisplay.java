@@ -198,8 +198,8 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		if ((i = report.addrExec()) != -1)
 		{
-			x = addr[i] % (smallWidth);
-			y = addr[i] / (smallHeight);
+			//x = addr[i] % (smallWidth);
+			//y = addr[i] / (smallHeight);
 			
 			if (report.pDeath()) paint.setColor(deathColor);
 			//activity.bufferCanvas.drawLine(x, y, x+1, y, paint);

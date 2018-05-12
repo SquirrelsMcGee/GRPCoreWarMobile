@@ -284,7 +284,7 @@ public class jMARS implements Runnable, FrontEndManager {
         activity.coreDisplay.clear();
 
 
-        final int delayMillis = 1;
+        final int delayMillis = 500;
 
         for (; roundNum < rounds; roundNum++)
         {
