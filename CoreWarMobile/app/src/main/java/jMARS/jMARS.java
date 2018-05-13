@@ -192,7 +192,8 @@ public class jMARS implements Runnable, FrontEndManager {
 
         warriors = new WarriorObj[numWarriors];
 
-        String filenames[] = {"imp.red", "clp.red"};
+        String filenames[] = {GameActivity.WarriorName,GameActivity.WarriorName2};
+        //String filenames[] = {"imp.red", "clp.red"};
 
         InputStream iS;
 
@@ -202,7 +203,9 @@ public class jMARS implements Runnable, FrontEndManager {
         {
             try
             {
-                InputStream inputStream = activity.getAssets().open(filenames[i]);
+                File file = new File(activity.getFilesDir(), filenames[i]);
+                InputStream inputStream = new FileInputStream(file);
+                //InputStream inputStream = activity.getAssets().open(filenames[i]);
 
 
                 Integer aColor = wColors[i % numDefinedColors][0];
@@ -220,9 +223,9 @@ public class jMARS implements Runnable, FrontEndManager {
             }
         }
 
-        activity.WarriorName = warriors[0].getName();
-        activity.WarriorName2 = warriors[1].getName();
-        activity.TextChanger(activity.WarriorName, activity.WarriorName2);
+        //activity.WarriorName = warriors[0].getName();
+        //activity.WarriorName2 = warriors[1].getName();
+        //activity.TextChanger(activity.WarriorName, activity.WarriorName2);
 
 
         warriors[0].Alive = true;
