@@ -181,7 +181,14 @@ public class GameActivity extends AppCompatActivity {
         Intent Barracks = new Intent(this, BarrackActivity.class);
         startActivity(Barracks);
     }
+    public void Compile(View view){
+        if(WarriorName == "Warrior 1" || WarriorName2 == "Warrior 2") {
+            Toast.makeText(getBaseContext(), "Add Warriors first", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getBaseContext(), "Compiled", Toast.LENGTH_SHORT).show();
+        }
 
+    }
     public void RunGame(View view) {
         jmars.startThread();
         //jmars.run();
