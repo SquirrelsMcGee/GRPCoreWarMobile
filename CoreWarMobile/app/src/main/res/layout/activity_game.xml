@@ -108,6 +108,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/compile"
+                android:onClick="Compile"
                 app:layout_constraintBottom_toTopOf="@id/editButton"
                 app:layout_constraintEnd_toStartOf="@id/runButton"
                 app:layout_constraintStart_toStartOf="parent"
