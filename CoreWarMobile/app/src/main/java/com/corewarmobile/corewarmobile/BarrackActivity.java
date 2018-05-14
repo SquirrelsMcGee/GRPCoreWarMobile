@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -24,6 +25,12 @@ public class BarrackActivity extends AppCompatActivity {
     private static Context context;
     private List<String> fileList = new ArrayList<String>();
 
+    public BarrackActivity activty = this;
+
+    ListView lv;
+    File[] files;
+    ArrayAdapter arrayAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,17 +45,19 @@ public class BarrackActivity extends AppCompatActivity {
 
 
     void ListDir(File f) {
-        ListView lv;
-        File[] files = f.listFiles();
+
+        files = f.listFiles();
         fileList.clear();
-        for (File file : files) {
+        File file = null;
+        for (int i = 0; i < files.length; i++) {
+            file = files[i];
             fileList.add(file.getName());
         }
         //ArrayAdapter<String> directoryList = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, fileList);
         //setListAdapter(directoryList);
-
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, fileList);
         lv = (ListView)findViewById(R.id.ListView);
-        lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, fileList));
+        lv.setAdapter(arrayAdapter);
 
         final Intent PlayS = new Intent(this, GameActivity.class);
 
@@ -64,10 +73,30 @@ public class BarrackActivity extends AppCompatActivity {
                 Toast.makeText(getBaseContext(), item, Toast.LENGTH_SHORT).show();
                 startActivity(PlayS);
                 //GA.TextChanger(item);
-
             }
         });
 
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> parent, View v, int pos, long id) {
+                List<String> temp = fileList;
+
+                item = ((TextView)v).getText().toString();
+
+                File dir = getFilesDir();
+                File file = new File(dir, item);
+                boolean deleted = file.delete();
+
+                if (deleted) {
+                    Toast.makeText(getBaseContext(), item + " deleted", Toast.LENGTH_SHORT).show();
+                }
+
+                fileList.remove(item);
+                temp.remove(item);
+                arrayAdapter.notifyDataSetChanged();
+
+                return true;
+            }
+        });
     }
 
 }

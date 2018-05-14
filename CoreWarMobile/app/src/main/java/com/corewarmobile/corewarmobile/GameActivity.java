@@ -26,6 +26,7 @@ import android.view.View;
 import java.lang.Runnable;
 import java.util.Random;
 import android.util.DisplayMetrics;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -62,6 +63,8 @@ public class GameActivity extends AppCompatActivity {
 
     GameActivity gameActivity = this;
     jMARS jmars;
+
+    boolean newWarrior = false;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,13 +159,15 @@ public class GameActivity extends AppCompatActivity {
             }
 
             public void surfaceDestroyed(SurfaceHolder holder) {
+                System.out.println("surfaceDestroyed");
+
                 surface.getHolder().removeCallback(this);
-                //if (handler != null) handler.removeCallbacks(loop);
                 jmars.screenClose();
             }
 
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
+                //System.out.println("Changed");
+                //jmars.screenClose();
             }
 
         });
@@ -171,8 +176,16 @@ public class GameActivity extends AppCompatActivity {
 
     public void NewWarrior(View view){
         Intent NewW = new Intent(this, NewWarriorActivity.class);
+        if (jmars.Active) {
+            if (!jmars.Paused) jmars.togglePause();
+        }
+
+        newWarrior = true;
         startActivity(NewW);
+
+
     }
+
     public void Add(View view){
         if(WarriorName != "Warrior 1" && WarriorName2 != "Warrior 2") {
             WarriorName = "Warrior 1";
@@ -190,8 +203,13 @@ public class GameActivity extends AppCompatActivity {
 
     }
     public void RunGame(View view) {
-        jmars.startThread();
-        //jmars.run();
+        if (jmars.Active == false) {
+            Button runButton = findViewById(R.id.runButton);
+            runButton.setText("Pause");
+            jmars.startThread();
+        } else {
+            jmars.togglePause();
+        }
     }
     public void TextChanger(String WarriorName, String WarriorName2) {
         TextView WarriorOne = (TextView)findViewById(R.id.warriorOneLabel);

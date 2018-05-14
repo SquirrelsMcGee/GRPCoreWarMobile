@@ -48,8 +48,8 @@ public class CoreDisplay extends Canvas implements StepListener
 
 	protected int width;
 	protected int height;
-	int smallWidth, smallHeight;
-	int numberAcross, size, sizeX, sizeY;
+	float smallWidth, smallHeight;
+	float numberAcross, numberVertical, size, sizeX, sizeY;
 
 	
 	//protected Image offScreen;
@@ -84,19 +84,22 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		System.out.printf("Width=%d, Height=%d\n", width, height);
 
-		numberAcross = 100;
 
-		sizeX = width/100;
-		sizeY = height/80;
+		numberAcross = 100;
+		numberVertical = coreS/numberAcross;
+
+		System.out.println(coreS + " " + numberVertical);
+
+		sizeX = width/numberAcross;
+		sizeY = height/numberVertical;
+
 		//sizeX = sizeY = 10;
 
 
-		smallWidth = width/sizeX;
-		smallHeight = height/sizeY;
-		//smallWidth = width;
-		//smallHeight = height;
+		smallWidth = numberAcross;
+		smallHeight = numberVertical;
 
-
+		System.out.println("smallWidth=" + smallWidth + " smallHeight="+ smallHeight);
 		//rectSize = 100;
 		
 		backgroundInt = Color.BLACK;
@@ -112,10 +115,11 @@ public class CoreDisplay extends Canvas implements StepListener
 	public void stepProcess(StepReport report)
 	{
 		int i;
-		int x = 0, y = 0;
+		float x = 0, y = 0;
 		int posX = 0, posY = 0;
 
 		int addr[];
+		float addrF; // address value as float
 
 		aliveColor = report.warrior().getColor();
 		deathColor = report.warrior().getDColor();
@@ -129,11 +133,14 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		for (i=0; i < addr.length; i++)
 		{
-			x = addr[i] % (smallWidth);
-			y = addr[i] / (smallHeight);
+			addrF = addr[i];
+			x = addrF % (smallWidth);
+			y = addrF / (int) (smallWidth);
 
 			posX = (int) x;
 			posY = (int) y;
+
+			//System.out.println("addrF=" + addrF + " posX=" + posX + " posY=" + posY);
 
 			posX *= sizeX;
 			posY *= sizeY;
@@ -147,8 +154,9 @@ public class CoreDisplay extends Canvas implements StepListener
 		for (i=0; i < addr.length; i++)
 		{
 
-			x = addr[i] % (smallWidth);
-			y = addr[i] / (smallHeight);
+			addrF = addr[i];
+			x = addrF % (smallWidth);
+			y = addrF / (int) (smallWidth);
 
 			posX = (int) x;
 			posY = (int) y;
@@ -164,11 +172,13 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		for (i=0; i < addr.length; i++)
 		{
-			x = addr[i] % (smallWidth);
-			y = addr[i] / (smallHeight);
+			addrF = addr[i];
+			x = addrF % (smallWidth);
+			y = addrF / (int) (smallWidth);
 
 			posX = (int) x;
 			posY = (int) y;
+			//posY = (int) (y - 0.5);
 
 			posX *= sizeX;
 			posY *= sizeY;
@@ -180,11 +190,13 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		for (i=0; i < addr.length; i++)
 		{
-			x = addr[i] % (smallWidth);
-			y = addr[i] / (smallHeight);
+			addrF = addr[i];
+			x = addrF % (smallWidth);
+			y = addrF / (int) (smallWidth);
 
 			posX = (int) x;
 			posY = (int) y;
+			//posY = (int) (y - 0.5);
 
 			posX *= sizeX;
 			posY *= sizeY;
@@ -217,7 +229,6 @@ public class CoreDisplay extends Canvas implements StepListener
 
 		if (activity != null && activity.coreCanvas != null) {
 			activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
-			//System.out.println("[Graphics Update] Updated Canvas");
 		}
 
 		try {

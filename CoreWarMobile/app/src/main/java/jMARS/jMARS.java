@@ -15,9 +15,11 @@ import android.view.*;
 
 import android.content.Context;
 import com.corewarmobile.corewarmobile.GameActivity;
+import com.corewarmobile.corewarmobile.R;
 
 import android.os.*;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
 
 import java.io.*;
 
@@ -39,6 +41,7 @@ public class jMARS implements Runnable, FrontEndManager {
     };*/
 
     public boolean Active = false;
+    public boolean Paused = false;
 
     // Application specific variables
     String args[];
@@ -112,9 +115,6 @@ public class jMARS implements Runnable, FrontEndManager {
         cycleListeners = new Vector<>();
         roundListeners = new Vector<>();
 
-        Active = true;
-
-
         //frameCanvas = bufferCanvas; // Updated to use Android canvas
     }
 
@@ -147,42 +147,6 @@ public class jMARS implements Runnable, FrontEndManager {
         rounds = 1;
         numWarriors = 2;
 
-        /*
-        for (int i=0; i<args.length; i++)
-        {
-            if (args[i].charAt(0) == '-')
-            {
-                if (args[i].equals("-r"))
-                {
-                    rounds = Integer.parseInt(args[++i]);
-                } else if (args[i].equals("-s"))
-                {
-                    coreSize = Integer.parseInt(args[++i]);
-                } else if (args[i].equals("-c"))
-                {
-                    cycles = Integer.parseInt(args[++i]);
-                } else if (args[i].equals("-p"))
-                {
-                    maxProc = Integer.parseInt(args[++i]);
-                } else if (args[i].equals("-l"))
-                {
-                    maxWarriorLength = Integer.parseInt(args[++i]);
-                } else if (args[i].equals("-d"))
-                {
-                    minWarriorDistance = Integer.parseInt(args[++i]);
-                } else if (args[i].equals("-S"))
-                {
-                    pSpaceSize = Integer.parseInt(args[++i]);
-                    pspaceChanged = true;
-                }
-            } else
-            {
-                numWarriors++;
-
-                wArgs.addElement(i);
-            }
-        }*/
-        //numWarriors++;
 
         if (!pspaceChanged)
             pSpaceSize = coreSize / 16;
@@ -233,12 +197,6 @@ public class jMARS implements Runnable, FrontEndManager {
 
         coreDisplay = activity.coreDisplay;
 
-        //roundCycleCounter = new RoundCycleCounter(this, this);
-
-        //validate();
-        //repaint();
-//		update(getGraphics());
-
         MARS = new MarsVM(coreSize, maxProc);
 
         loadWarriors();
@@ -249,14 +207,14 @@ public class jMARS implements Runnable, FrontEndManager {
         cycleNum = 0;
         warRun = 0;
 
-        //if (true) return;
 
     }
     public void startThread() {
 
+        Active = true;
+
         myThread = new Thread(this);
         myThread.start();
-
     }
 
     public static String getStringFromFile (File file) throws Exception {
@@ -280,6 +238,9 @@ public class jMARS implements Runnable, FrontEndManager {
     }
 
     public void run() {
+
+        Button runButton = activity.findViewById(R.id.runButton);
+        if (Active) runButton.setText("Pause");
         startTime = new Date();
         roundNum = 0;
         rounds = 1;
@@ -287,10 +248,9 @@ public class jMARS implements Runnable, FrontEndManager {
         activity.coreDisplay.clear();
 
 
-        final int delayMillis = 500;
+        final int delayMillis = 5;
 
-        for (; roundNum < rounds; roundNum++)
-        {
+        for (; roundNum < rounds; roundNum++) {
             roundOver = false;
 
             //System.out.println("Round #"+roundNum);
@@ -301,69 +261,76 @@ public class jMARS implements Runnable, FrontEndManager {
                 @Override
                 public void run() {
                     if (cycleNum < cycles && roundOver == false) {
-                        for (; warRun < runWarriors; warRun++) {
+                        //if (Paused) System.out.println("Attempted to cycle but was paused");
+                        if (Active && !Paused) {
+                            for (; warRun < runWarriors; warRun++) {
 
-                            StepReport stats = MARS.executeInstr();
+                                StepReport stats = MARS.executeInstr();
 
-                            WarriorObj war = stats.warrior();
+                                WarriorObj war = stats.warrior();
 
-                            war.numProc = stats.numProc();
+                                war.numProc = stats.numProc();
 
-                            if (stats.wDeath()) {
-                                war.Alive = false;
-                                runWarriors--;
+                                if (stats.wDeath()) {
+                                    war.Alive = false;
+                                    runWarriors--;
+                                }
+
+                                notifyStepListeners(stats);
                             }
 
-                            //System.out.printf("[Process Update] Round #%d Cycle #%d Warrior #%d\n", roundNum, cycleNum, warRun);
+                            notifyCycleListeners(cycleNum);
 
+                            warRun = 0;
 
-                            notifyStepListeners(stats);
+                            if (runWarriors <= minWarriors) {
+                                roundOver = true;
+                            }
 
+                            cycleNum++;
 
                         }
-
-                        notifyCycleListeners(cycleNum);
-
-                        warRun = 0;
-
-                        if (runWarriors <= minWarriors) {
-                            roundOver = true;
-                        }
-
-                        cycleNum++;
                         handler.postDelayed(this, delayMillis);
-                        //}
 
                     } else {
+                        if (Active && !Paused) {
+                            //notifyRoundListeners(roundNum);
+                            if (activity.coreCanvas == null) {
+                                System.out.println("For some reason coreCanvas is null");
+                                return;
+                            }
 
-                        //notifyRoundListeners(roundNum);
+                            endTime = new Date();
+                            totalTime = ((double) endTime.getTime() - (double) startTime.getTime()) / 1000;
+                            System.out.println("Total time=" + totalTime + " Cycles=" + cycleNum + " avg. time/cycle=" + (totalTime / cycleNum));
 
-                        endTime = new Date();
-                        totalTime = ((double) endTime.getTime() - (double) startTime.getTime()) / 1000;
-                        System.out.println("Total time="+ totalTime +" Cycles="+ cycleNum +" avg. time/cycle="+ (totalTime/cycleNum));
+                            paint.setColor(Color.WHITE);
+                            paint.setTextSize(40);
 
-                        paint.setColor(Color.WHITE);
-                        paint.setTextSize(40);
+                            activity.coreCanvas = activity.surfaceHolder.lockCanvas();
+                            activity.bufferCanvas.drawText("Total time=" + totalTime + " Cycles=" + cycleNum + " avg. time/cycle=" + (totalTime / cycleNum),
+                                    10, -100 + activity.coreCanvas.getHeight() / 2, paint);
 
-                        activity.coreCanvas = activity.surfaceHolder.lockCanvas();
-                        activity.bufferCanvas.drawText("Total time="+ totalTime +" Cycles="+ cycleNum +" avg. time/cycle=" + (totalTime/cycleNum),
-                                 10, -100 + activity.coreCanvas.getHeight()/2, paint);
+                            paint.setColor(Color.LTGRAY);
+                            activity.bufferCanvas.drawText("Total time=" + totalTime + " Cycles=" + cycleNum + " avg. time/cycle=" + (totalTime / cycleNum),
+                                    12, -98 + activity.coreCanvas.getHeight() / 2, paint);
 
-                        paint.setColor(Color.LTGRAY);
-                        activity.bufferCanvas.drawText("Total time="+ totalTime +" Cycles="+ cycleNum +" avg. time/cycle=" + (totalTime/cycleNum),
-                                12, -98 + activity.coreCanvas.getHeight()/2, paint);
+                            activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
+                            activity.surfaceHolder.unlockCanvasAndPost(activity.coreCanvas);
 
-                        activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
-                        activity.surfaceHolder.unlockCanvasAndPost(activity.coreCanvas);
+                            startTime = new Date();
 
-                        startTime = new Date();
+                            MARS.reset();
+                            loadWarriors();
+                            runWarriors = numWarriors;
+                            //activity.coreDisplay.clear();
 
-                        MARS.reset();
-                        loadWarriors();
-                        runWarriors = numWarriors;
-                        //activity.coreDisplay.clear();
+                            Active = false;
+                            Button runButton = activity.findViewById(R.id.runButton);
+                            runButton.setText("Replay");
 
-                        cycleNum = 0;
+                            cycleNum = 0;
+                        }
                     }
                 }
             };
@@ -422,28 +389,53 @@ public class jMARS implements Runnable, FrontEndManager {
     private void notifyStepListeners(StepReport step) {
         for (Enumeration e = stepListeners.elements(); e.hasMoreElements(); ) {
             StepListener j = (StepListener) e.nextElement();
-            if (Active) j.stepProcess(step);
+            if (Active) {
+                //System.out.println("Stepping Process");
+                j.stepProcess(step);
+            }
         }
     }
 
     private void notifyCycleListeners(int cycle) {
         for (Enumeration e = cycleListeners.elements(); e.hasMoreElements(); ) {
             CycleListener j = (CycleListener) e.nextElement();
-            if (Active) j.cycleFinished(cycle);
+            if (Active) {
+                //System.out.println("Cycle Finished");
+                j.cycleFinished(cycle);
+            }
         }
     }
 
     private void notifyRoundListeners(int round) {
         for (Enumeration e = roundListeners.elements(); e.hasMoreElements(); ) {
             RoundListener j = (RoundListener) e.nextElement();
-            if (Active) j.roundResults(round);
+            if (Active) {
+                //System.out.println("Round Finished");
+                j.roundResults(round);
+            }
         }
     }
 
     public void screenClose() {
         Active = false;
+        System.out.println("handler exists" + (handler != null) + " thread exists" + (myThread != null));
         if (myThread != null) myThread.interrupt();
         if (handler != null) handler.removeCallbacksAndMessages(null);
+    }
+
+    public void togglePause() {
+        Button runButton = activity.findViewById(R.id.runButton);
+        if (Paused) {
+            runButton.setText("Pause");
+            Paused = false;
+        } else {
+            runButton.setText("Run");
+            Paused = true;
+        }
+
+        System.out.println("Paused=" +Paused);
+
+
 
     }
 
