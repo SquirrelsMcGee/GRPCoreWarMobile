@@ -100,15 +100,15 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <Button
-                android:id="@+id/compileButton"
+                android:id="@+id/reloadButton"
                 android:layout_width="90dp"
                 android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/compile"
-                android:onClick="Compile"
+                android:text="@string/reload"
+                android:onClick="Reload"
                 app:layout_constraintBottom_toTopOf="@id/editButton"
                 app:layout_constraintEnd_toStartOf="@id/runButton"
                 app:layout_constraintStart_toStartOf="parent"
@@ -126,7 +126,7 @@
                 android:onClick="RunGame"
                 app:layout_constraintBottom_toTopOf="@id/addButton"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/compileButton"
+                app:layout_constraintStart_toEndOf="@id/reloadButton"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
@@ -156,7 +156,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/addButton"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/compileButton" />
+                app:layout_constraintTop_toBottomOf="@id/reloadButton" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout

@@ -52,16 +52,16 @@ public class RoundCycleCounter implements CycleListener, RoundListener
 	public RoundCycleCounter()
 	{
 		/*super("Round #0000, Cycle #000000", Label.CENTER);
-		
+
 		man.registerCycleListener(this);
 		man.registerRoundListener(this);
-		
+
 		con.add(this);
-		
+
 		cycle = 1;
 		round = 1;
 		changed = true;
-				
+
 		return;
 		*/
 	}

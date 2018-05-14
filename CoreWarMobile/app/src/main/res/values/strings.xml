@@ -47,6 +47,7 @@
     <string name="add">Add</string>
     <string name="edit">Edit</string>
     <string name="compile">Compile</string>
+    <string name="reload">Reload</string>
     <string name="progress">Progress</string>
     <string name="warrior_2">Warrior 2</string>
     <string name="warrior_1">Warrior 1</string>

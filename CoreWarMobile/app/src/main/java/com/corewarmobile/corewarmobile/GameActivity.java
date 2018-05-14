@@ -41,14 +41,16 @@ public class GameActivity extends AppCompatActivity {
 
 
     SurfaceView surface;
-    TextView progress;
+    public TextView progress;
 
     public SurfaceHolder surfaceHolder;
     public Canvas coreCanvas;
     public Canvas bufferCanvas;
     public Rect canvasDimensions;
-    static public String WarriorName = "Warrior 1";
-    static public String WarriorName2 = "Warrior 2";
+
+    static public String WarriorName = null;
+    static public String WarriorName2 = null;
+
     public Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
     public Bitmap bmp;
 
@@ -131,13 +133,6 @@ public class GameActivity extends AppCompatActivity {
 
                 progress.setText("Post");
 
-                jmars.test();
-                //bufferCanvas = jmars.bufferCanvas;
-
-                //coreCanvas = surfaceHolder.lockCanvas();
-                //coreCanvas.drawBitmap(bmp, identityMatrix, null);
-                //surfaceHolder.unlockCanvasAndPost(coreCanvas);
-
                 coreCanvas = surfaceHolder.lockCanvas();
                 paint.setColor(Color.BLACK);
                 bufferCanvas.drawRect(0,0,canvasWidth,canvasHeight, paint);
@@ -195,7 +190,12 @@ public class GameActivity extends AppCompatActivity {
         Intent Barracks = new Intent(this, BarrackActivity.class);
         startActivity(Barracks);
     }
-    public void Compile(View view){
+
+    public void Reload(View view){
+
+
+
+        if (true) return;
         if(WarriorName == "Warrior 1" || WarriorName2 == "Warrior 2") {
             Toast.makeText(getBaseContext(), "Add Warriors first", Toast.LENGTH_SHORT).show();
         }else{

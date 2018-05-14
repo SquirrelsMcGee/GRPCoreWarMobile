@@ -26,52 +26,45 @@ import java.io.*;
 public class jMARS implements Runnable, FrontEndManager {
 
     // constants
-    static final int numDefinedColors = 4;
-    static final int wColors[][] = {
+    static final int numDefinedColors = 4; // Number of colour groups
+
+    static final int wColors[][] = { // Colour groups for each warrior
             {Color.GREEN, Color.YELLOW},
             {Color.RED, Color.MAGENTA},
             {Color.CYAN, Color.BLUE},
             {Color.GRAY, Color.DKGRAY}};
-    /*
-    static final int wColors[][] = {
-            {0x00FF00, 0xFFFF00},
-            {0xFF0000, 0xFF00FF},
-            {0x00FFFF, 0x0000FF},
-            {0x808080, 0x696969},
-    };*/
 
-    public boolean Active = false;
-    public boolean Paused = false;
 
-    // Application specific variables
-    String args[];
-    //static Frame myFrame; // Unimplemented
-
-    //static jMARS myApp;
+    public boolean Active = false; // If the game is running and has not finished
+    public boolean Paused = false; // if the game is running, has not finished, and is paused
+    public boolean roundOver = false; // if the round is over
 
     // Common variables
-    int maxProc;
-    int pSpaceSize;
-    public int coreSize;
-    int cycles;
-    int rounds;
+    int maxProc; // maximum process
+    int pSpaceSize; //program space size
+    public int coreSize; // core size (determines how long the array is)
+    int cycles; // number of cycles to run in each round
+    int rounds; // number of rounds to play
     int maxWarriorLength;
     int minWarriorDistance;
-    int numWarriors;
-    int minWarriors;
+    int numWarriors; // number of active warriors
+    int minWarriors; // minimum number of active warriors before forceful end
 
-    WarriorObj warriors[];
-    CoreDisplay coreDisplay;
-    //RoundCycleCounter roundCycleCounter; // Unimplemented
-    MarsVM MARS;
+    WarriorObj warriors[]; // array containing warrior objects
 
-    int roundNum;
-    int cycleNum;
-    int warRun;
-    int runWarriors;
+    GameActivity activity; // reference to the GameActivity, for data access and screen drawing
+    MarsVM MARS; // reference to the virtual machine class
 
-    static Thread myThread;
-    Handler handler;
+    CoreDisplay coreDisplay; // reference to front end class
+    RoundCycleCounter roundCycleCounter; // Unimplemented
+
+    int roundNum; // current round number
+    int cycleNum; // current cycle number
+    int warRun; // current warrior within cycle
+    int runWarriors; // number of warriors to run
+
+    static Thread myThread; // self thread
+    Handler handler; // handler for screen drawing/cycling processes
 
     Vector<StepListener> stepListeners;
     Vector<CycleListener> cycleListeners;
@@ -80,45 +73,11 @@ public class jMARS implements Runnable, FrontEndManager {
     Date startTime;
     Date endTime;
     double totalTime;
-    boolean roundOver = false;
 
-    // To write to the screen we use
-    // SurfaceView surface
-    // SurfaceHolder surfaceHolder;
-    // Canvas coreCanvas;
-    // Canvas bufferCanvas
-    // Rect canvasDimensions;
     Paint paint = new Paint();
 
-    Context context;
-    GameActivity activity;
-
-
-
-    public SurfaceHolder surfaceHolder;
-    public SurfaceView surfaceView;
-    public Canvas coreCanvas;
-    public Canvas bufferCanvas;
-    public Matrix identityMatrix = new Matrix();
-    public Bitmap bmp;
-
-    public jMARS(GameActivity superActivity)
-    {
-        activity = superActivity;
-
-        //surfaceHolder = activity.surfaceHolder;
-        //bufferCanvas = activity.bufferCanvas;
-        //context = activity.context;
-
-
-        stepListeners = new Vector<>();
-        cycleListeners = new Vector<>();
-        roundListeners = new Vector<>();
-
-        //frameCanvas = bufferCanvas; // Updated to use Android canvas
-    }
-
-    public void test() {
+    // Test of drawing to the canvas from a class outside of GameActivity
+    /*public void test() {
 
         for (int i = 0; i < 1000; i+=100) {
 
@@ -129,21 +88,29 @@ public class jMARS implements Runnable, FrontEndManager {
 
             //activity.bufferCanvas.drawRect(rectangle, paint);
         }
+    }*/
 
+    // constructor
+    public jMARS(GameActivity superActivity)
+    {
+        activity = superActivity; // set a reference to the GameActivity this was created from
+
+        stepListeners = new Vector<>();
+        cycleListeners = new Vector<>();
+        roundListeners = new Vector<>();
 
     }
 
     public void application_init()
     {
         boolean pspaceChanged = false;
-        Vector<Integer> wArgs = new Vector<Integer>();
 
         // Set defaults for various constants
         maxWarriorLength = 100;
         minWarriorDistance = 100;
         maxProc = 8000;
         coreSize = 5000;
-        cycles = 1000;
+        cycles = 8000;
         rounds = 1;
         numWarriors = 2;
 
@@ -157,19 +124,20 @@ public class jMARS implements Runnable, FrontEndManager {
         warriors = new WarriorObj[numWarriors];
 
         //String filenames[] = {GameActivity.WarriorName,GameActivity.WarriorName2};
-        String filenames[] = {"imp.red", "clp.red"};
+        String filenames[] = {"clp.red", "dwarf.red", "ElectricHead.red", "imp.red", "imp2.red", "rave.red", "rose.red", "twister.red"};
 
-        InputStream iS;
 
-        //if (true)return;
 
         for (int i=0; i < numWarriors; i++)
         {
             try
             {
-                File file = new File(activity.getFilesDir(), filenames[i]);
-                //InputStream inputStream = new FileInputStream(file);
-                InputStream inputStream = activity.getAssets().open(filenames[i]);
+                Random r = new Random();
+                int randomIndex = r.nextInt(filenames.length);
+                int index = randomIndex;
+
+                //File file = new File(activity.getFilesDir(), filenames[index]);
+                InputStream inputStream = activity.getAssets().open(filenames[index]);
 
 
                 Integer aColor = wColors[i % numDefinedColors][0];
@@ -187,13 +155,9 @@ public class jMARS implements Runnable, FrontEndManager {
             }
         }
 
-        //activity.WarriorName = warriors[0].getName();
-        //activity.WarriorName2 = warriors[1].getName();
-        //activity.TextChanger(activity.WarriorName, activity.WarriorName2);
-
-
-        warriors[0].Alive = true;
-        warriors[1].Alive = true;
+        activity.WarriorName = "Warrior 1: \n" + warriors[0].getName();
+        activity.WarriorName2 = "Warrior 2: \n" + warriors[1].getName();
+        activity.TextChanger(activity.WarriorName, activity.WarriorName2);
 
         coreDisplay = activity.coreDisplay;
 
@@ -206,7 +170,6 @@ public class jMARS implements Runnable, FrontEndManager {
         roundNum = 0;
         cycleNum = 0;
         warRun = 0;
-
 
     }
     public void startThread() {
@@ -290,11 +253,14 @@ public class jMARS implements Runnable, FrontEndManager {
                             cycleNum++;
 
                         }
+                        activity.progress.setText("Cycle: " + cycleNum + "/" +cycles);
                         handler.postDelayed(this, delayMillis);
 
                     } else {
                         if (Active && !Paused) {
                             //notifyRoundListeners(roundNum);
+                            activity.progress.setText("Finished");
+
                             if (activity.coreCanvas == null) {
                                 System.out.println("For some reason coreCanvas is null");
                                 return;
@@ -304,16 +270,23 @@ public class jMARS implements Runnable, FrontEndManager {
                             totalTime = ((double) endTime.getTime() - (double) startTime.getTime()) / 1000;
                             System.out.println("Total time=" + totalTime + " Cycles=" + cycleNum + " avg. time/cycle=" + (totalTime / cycleNum));
 
-                            paint.setColor(Color.WHITE);
+
                             paint.setTextSize(40);
 
                             activity.coreCanvas = activity.surfaceHolder.lockCanvas();
+
+                            paint.setColor(Color.BLACK);
+                            activity.bufferCanvas.drawRect(0, ((activity.coreCanvas.getHeight() / 3)), activity.coreCanvas.getWidth(), 100 + activity.coreCanvas.getHeight() / 2, paint);
+
+                            paint.setColor(Color.WHITE);
+
                             activity.bufferCanvas.drawText("Total time=" + totalTime + " Cycles=" + cycleNum + " avg. time/cycle=" + (totalTime / cycleNum),
                                     10, -100 + activity.coreCanvas.getHeight() / 2, paint);
 
                             paint.setColor(Color.LTGRAY);
                             activity.bufferCanvas.drawText("Total time=" + totalTime + " Cycles=" + cycleNum + " avg. time/cycle=" + (totalTime / cycleNum),
                                     12, -98 + activity.coreCanvas.getHeight() / 2, paint);
+
 
                             activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
                             activity.surfaceHolder.unlockCanvasAndPost(activity.coreCanvas);
@@ -425,6 +398,7 @@ public class jMARS implements Runnable, FrontEndManager {
 
     public void togglePause() {
         Button runButton = activity.findViewById(R.id.runButton);
+        if (cycleNum == cycles) return;
         if (Paused) {
             runButton.setText("Pause");
             Paused = false;
