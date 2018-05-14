@@ -131,7 +131,7 @@ public class GameActivity extends AppCompatActivity {
                 bufferCanvas = new Canvas(bmp);
                 // Do some drawing when surface is ready
 
-                progress.setText("Post");
+                progress.setText("");
 
                 coreCanvas = surfaceHolder.lockCanvas();
                 paint.setColor(Color.BLACK);
@@ -193,7 +193,16 @@ public class GameActivity extends AppCompatActivity {
 
     public void Reload(View view){
 
+        Button reload = findViewById(R.id.reloadButton);
+        reload.setText("Reload");
 
+        jmars.screenClose();
+
+        Button runButton = findViewById(R.id.runButton);
+        runButton.setText("Run");
+
+        jmars.application_init();
+        jmars.run();
 
         if (true) return;
         if(WarriorName == "Warrior 1" || WarriorName2 == "Warrior 2") {
@@ -207,6 +216,10 @@ public class GameActivity extends AppCompatActivity {
         if (jmars.Active == false) {
             Button runButton = findViewById(R.id.runButton);
             runButton.setText("Pause");
+
+            Button reload = findViewById(R.id.reloadButton);
+            reload.setText("Stop");
+
             jmars.startThread();
         } else {
             jmars.togglePause();

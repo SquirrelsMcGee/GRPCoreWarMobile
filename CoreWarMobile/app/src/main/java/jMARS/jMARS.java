@@ -329,14 +329,13 @@ public class jMARS implements Runnable, FrontEndManager {
             {
                 validSpot = true;
                 r = (int) (Math.random() * coreSize);
-                //System.out.println(r);
+
                 if (r < minWarriorDistance || r > (coreSize - minWarriorDistance))
                     validSpot = false;
 
-                for (int j=0; j < location.length; j++)
+                for (int j=0; j<location.length; j++)
                     if (r < (minWarriorDistance + location[j]) && r > (minWarriorDistance + location[j]))
                         validSpot = false;
-
             } while (!validSpot);
 
             if (!MARS.loadWarrior(warriors[i], r))
@@ -391,7 +390,7 @@ public class jMARS implements Runnable, FrontEndManager {
 
     public void screenClose() {
         Active = false;
-        System.out.println("handler exists" + (handler != null) + " thread exists" + (myThread != null));
+        //System.out.println("handler exists" + (handler != null) + " thread exists" + (myThread != null));
         if (myThread != null) myThread.interrupt();
         if (handler != null) handler.removeCallbacksAndMessages(null);
     }
