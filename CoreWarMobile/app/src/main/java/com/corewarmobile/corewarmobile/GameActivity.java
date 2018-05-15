@@ -29,6 +29,7 @@ import android.util.DisplayMetrics;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import frontend.*;
 import marsVM.*;
@@ -40,14 +41,16 @@ public class GameActivity extends AppCompatActivity {
 
 
     SurfaceView surface;
-    TextView progress;
+    public TextView progress;
 
     public SurfaceHolder surfaceHolder;
     public Canvas coreCanvas;
     public Canvas bufferCanvas;
     public Rect canvasDimensions;
-    static public String WarriorName = "Warrior 1";
-    static public String WarriorName2 = "Warrior 2";
+
+    static public String WarriorName = null;
+    static public String WarriorName2 = null;
+
     public Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
     public Bitmap bmp;
 
@@ -128,14 +131,7 @@ public class GameActivity extends AppCompatActivity {
                 bufferCanvas = new Canvas(bmp);
                 // Do some drawing when surface is ready
 
-                progress.setText("Post");
-
-                jmars.test();
-                //bufferCanvas = jmars.bufferCanvas;
-
-                //coreCanvas = surfaceHolder.lockCanvas();
-                //coreCanvas.drawBitmap(bmp, identityMatrix, null);
-                //surfaceHolder.unlockCanvasAndPost(coreCanvas);
+                progress.setText("");
 
                 coreCanvas = surfaceHolder.lockCanvas();
                 paint.setColor(Color.BLACK);
@@ -194,7 +190,21 @@ public class GameActivity extends AppCompatActivity {
         Intent Barracks = new Intent(this, BarrackActivity.class);
         startActivity(Barracks);
     }
-    public void Compile(View view){
+
+    public void Reload(View view){
+
+        Button reload = findViewById(R.id.reloadButton);
+        reload.setText("Reload");
+
+        jmars.screenClose();
+
+        Button runButton = findViewById(R.id.runButton);
+        runButton.setText("Run");
+
+        jmars.application_init();
+        jmars.run();
+
+        if (true) return;
         if(WarriorName == "Warrior 1" || WarriorName2 == "Warrior 2") {
             Toast.makeText(getBaseContext(), "Add Warriors first", Toast.LENGTH_SHORT).show();
         }else{
@@ -206,6 +216,10 @@ public class GameActivity extends AppCompatActivity {
         if (jmars.Active == false) {
             Button runButton = findViewById(R.id.runButton);
             runButton.setText("Pause");
+
+            Button reload = findViewById(R.id.reloadButton);
+            reload.setText("Stop");
+
             jmars.startThread();
         } else {
             jmars.togglePause();

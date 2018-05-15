@@ -249,13 +249,9 @@ public class CoreDisplay extends Canvas implements StepListener
 	 */
 	public void clear()
 	{
-		//if (offScreen == null)
-		//	return;
-		
-		//buffer.setColor(background);
-		paint.setColor(backgroundInt);
-
 		activity.coreCanvas = activity.surfaceHolder.lockCanvas();
+
+		paint.setColor(backgroundInt);
 
 		activity.bufferCanvas.drawRect(0, 0, width, height, paint);
 

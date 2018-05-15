@@ -1,6 +1,6 @@
 ;name Dwarf
-;author Test
+;author A. K. Dewdney
 
-add #4, 3        ; execution begins here
-mov.i 2, @2
-jmp -2
+mov.i -1,3
+add.ab #4,-1
+jmp -2,0
