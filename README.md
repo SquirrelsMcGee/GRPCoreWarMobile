@@ -2,6 +2,8 @@
 This is the source repository for the Core War Mobile project.
 Active development can be found in the jamestestbranch branch.
 
+![Screenshot of Core War Mobile](cwmobile_screenshot.png)
+
 ## Requirements:
 - Android Studio (Most recent version)
 - Android SDK version 26 with Device capabable of running on SDK 26
@@ -10,7 +12,7 @@ Active development can be found in the jamestestbranch branch.
 ## How to Install and Run:
 - Clone the repository
 - Open Android Studio
-- Import project, browse to the downloaded folder location
+- Import project, browse to the downloaded folder location (/CoreWarMobile)
 - Build the project
 - Run the project using the desired device
 
