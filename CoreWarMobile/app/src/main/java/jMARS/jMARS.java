@@ -76,20 +76,6 @@ public class jMARS implements Runnable, FrontEndManager {
 
     Paint paint = new Paint();
 
-    // Test of drawing to the canvas from a class outside of GameActivity
-    /*public void test() {
-
-        for (int i = 0; i < 1000; i+=100) {
-
-            Random rnd = new Random();
-            int color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-            Rect rectangle = new Rect(i, 500, i+100, 600);
-            paint.setColor(color);
-
-            //activity.bufferCanvas.drawRect(rectangle, paint);
-        }
-    }*/
-
     // constructor
     public jMARS(GameActivity superActivity)
     {
@@ -109,7 +95,7 @@ public class jMARS implements Runnable, FrontEndManager {
         maxWarriorLength = 100;
         minWarriorDistance = 100;
         maxProc = 8000;
-        coreSize = 5000;
+        coreSize = 8000;
         cycles = 8000;
         rounds = 1;
         numWarriors = 2;
@@ -125,7 +111,6 @@ public class jMARS implements Runnable, FrontEndManager {
 
         //String filenames[] = {GameActivity.WarriorName,GameActivity.WarriorName2};
         String filenames[] = {"clp.red", "dwarf.red", "ElectricHead.red", "imp.red", "imp2.red", "rave.red", "rose.red", "twister.red"};
-
 
 
         for (int i=0; i < numWarriors; i++)
@@ -149,6 +134,8 @@ public class jMARS implements Runnable, FrontEndManager {
 
                 System.out.println("Warrior ["+i+"] name = " + warriors[i].getName());
 
+                if (warriors[i].getName() ==  null) warriors[i].setName(filenames[index]);
+
             } catch (Exception e)
             {
                 e.printStackTrace();
@@ -157,6 +144,7 @@ public class jMARS implements Runnable, FrontEndManager {
 
         activity.WarriorName = "Warrior 1: \n" + warriors[0].getName();
         activity.WarriorName2 = "Warrior 2: \n" + warriors[1].getName();
+
         activity.TextChanger(activity.WarriorName, activity.WarriorName2);
 
         coreDisplay = activity.coreDisplay;
@@ -178,26 +166,6 @@ public class jMARS implements Runnable, FrontEndManager {
 
         myThread = new Thread(this);
         myThread.start();
-    }
-
-    public static String getStringFromFile (File file) throws Exception {
-        File fl = file;
-        FileInputStream fin = new FileInputStream(fl);
-        String ret = convertStreamToString(fin);
-        //Make sure you close all streams.
-        fin.close();
-        return ret;
-    }
-
-    public static String convertStreamToString(InputStream is) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        reader.close();
-        return sb.toString();
     }
 
     public void run() {
@@ -273,30 +241,40 @@ public class jMARS implements Runnable, FrontEndManager {
 
                             paint.setTextSize(40);
 
+
+                            /* Draw final information to the canvas */
                             activity.coreCanvas = activity.surfaceHolder.lockCanvas();
 
                             paint.setColor(Color.BLACK);
                             activity.bufferCanvas.drawRect(0, ((activity.coreCanvas.getHeight() / 3)), activity.coreCanvas.getWidth(), 100 + activity.coreCanvas.getHeight() / 2, paint);
 
                             paint.setColor(Color.WHITE);
-
                             activity.bufferCanvas.drawText("Total time=" + totalTime + " Cycles=" + cycleNum + " avg. time/cycle=" + (totalTime / cycleNum),
                                     10, -100 + activity.coreCanvas.getHeight() / 2, paint);
+
+                            activity.bufferCanvas.drawText(warriors[0].getName() + " - Alive=" +warriors[0].Alive,
+                                    100, -40 + activity.coreCanvas.getHeight() / 2, paint);
+                            activity.bufferCanvas.drawText(warriors[1].getName() + " - Alive=" +warriors[1].Alive,
+                                    100, activity.coreCanvas.getHeight() / 2, paint);
 
                             paint.setColor(Color.LTGRAY);
                             activity.bufferCanvas.drawText("Total time=" + totalTime + " Cycles=" + cycleNum + " avg. time/cycle=" + (totalTime / cycleNum),
                                     12, -98 + activity.coreCanvas.getHeight() / 2, paint);
 
+                            activity.bufferCanvas.drawText(warriors[0].getName() + " - Alive=" +warriors[0].Alive,
+                                    102, -38 + activity.coreCanvas.getHeight() / 2, paint);
+                            activity.bufferCanvas.drawText(warriors[1].getName() + " - Alive=" +warriors[1].Alive,
+                                    102, 2+ activity.coreCanvas.getHeight() / 2, paint);
+
 
                             activity.coreCanvas.drawBitmap(activity.bmp, activity.identityMatrix, null);
                             activity.surfaceHolder.unlockCanvasAndPost(activity.coreCanvas);
 
-                            startTime = new Date();
+                            startTime = new Date(); // used for calculating run time
 
                             MARS.reset();
                             loadWarriors();
                             runWarriors = numWarriors;
-                            //activity.coreDisplay.clear();
 
                             Active = false;
                             Button runButton = activity.findViewById(R.id.runButton);

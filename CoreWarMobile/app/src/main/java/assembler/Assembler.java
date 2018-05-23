@@ -14,7 +14,7 @@ public class Assembler {
     protected int start;
 
     // meta values
-    protected String name;
+    protected String name = null;
     protected String author;
 
 

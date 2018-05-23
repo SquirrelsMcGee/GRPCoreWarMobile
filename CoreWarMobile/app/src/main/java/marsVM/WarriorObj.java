@@ -111,6 +111,11 @@ public class WarriorObj
 	{
 		return name;
 	}
+
+	// setter for names
+	public void setName(String sname) {
+		name = sname;
+	}
 	
 	public String getAuthor()
 	{

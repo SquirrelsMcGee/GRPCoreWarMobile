@@ -201,15 +201,11 @@ public class GameActivity extends AppCompatActivity {
         Button runButton = findViewById(R.id.runButton);
         runButton.setText("Run");
 
+        jmars.Paused = false;
+
         jmars.application_init();
         jmars.run();
 
-        if (true) return;
-        if(WarriorName == "Warrior 1" || WarriorName2 == "Warrior 2") {
-            Toast.makeText(getBaseContext(), "Add Warriors first", Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(getBaseContext(), "Compiled", Toast.LENGTH_SHORT).show();
-        }
 
     }
     public void RunGame(View view) {

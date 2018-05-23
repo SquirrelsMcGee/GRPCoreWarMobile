@@ -212,10 +212,10 @@ public class CoreDisplay extends Canvas implements StepListener
 		{
 			//x = addr[i] % (smallWidth);
 			//y = addr[i] / (smallHeight);
-			
-			if (report.pDeath()) paint.setColor(deathColor);
-			//activity.bufferCanvas.drawLine(x, y, x+1, y, paint);
-			//activity.bufferCanvas.drawLine(x, y+1, x+1, y+1, paint);
+
+			if (report.pDeath()) {
+
+			}
 		}
 		if (activity == null) System.out.println("Error: Activity is null");
 		if (activity.coreCanvas == null) System.out.println("Error: Activity.coreCanvas is null");
